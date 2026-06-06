@@ -21,6 +21,7 @@
           panel: '#141418',
           panel2: '#1C1C22',
           red: { DEFAULT: '#E11D2B', bright: '#FF2A3A', dark: '#A50D18' },
+          blue: { DEFAULT: '#107ACA', light: '#2E97E6', dark: '#0A5C9E' },
           dispo: '#22C55E',
           reserve: '#EF4444',
           indispo: '#52525B',
@@ -47,9 +48,6 @@
   .glow-red { box-shadow: 0 0 0 1px rgba(225,29,43,.4), 0 0 40px -8px rgba(225,29,43,.5), inset 0 0 60px -30px rgba(225,29,43,.6); }
   .slot { transition: transform .12s ease, filter .12s ease; }
   .slot:hover { transform: translateY(-1px); filter: brightness(1.12); }
-  .nav-link::after { content:""; display:block; height:2px; width:0; background:#E11D2B; transition:width .25s ease; }
-  .nav-link:hover::after, .nav-link.active-nav::after { width: 100%; }
-  .nav-link.active-nav { color:#fff; }
   ::-webkit-scrollbar { height: 8px; width: 8px; }
   ::-webkit-scrollbar-thumb { background:#2a2a33; border-radius: 99px; }
   .toast { animation: pop .35s cubic-bezier(.2,.8,.2,1) both; }
@@ -57,11 +55,11 @@
   @keyframes drift { 0%{transform:translateX(0) scale(1);opacity:.5} 50%{opacity:.8} 100%{transform:translateX(40px) scale(1.15);opacity:.3} }
   .smoke { animation: drift 9s ease-in-out infinite alternate; }
   .car-watermark { position:absolute; pointer-events:none; opacity:.06; }
+  #menuOverlay { animation: fade .25s ease both; }
 </style>
 </head>
 <body class="font-sans antialiased">
 
-<!-- ===== SVG réutilisables : voiture détaillée + voiture trait ===== -->
 <svg width="0" height="0" style="position:absolute">
   <defs>
     <linearGradient id="bodyRed" x1="0" y1="0" x2="0" y2="1">
@@ -78,39 +76,57 @@
   </defs>
 </svg>
 
-<!-- ====================== NAV ====================== -->
+<!-- ====================== NAV (épuré : logo + burger) ====================== -->
 <header class="sticky top-0 z-40 bg-noir/80 backdrop-blur-md border-b border-white/10">
   <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
-    <button onclick="nav('home')" class="flex items-center gap-2.5 group">
+    <button onclick="nav('home')" class="flex items-center gap-2.5">
       <span class="grid place-items-center w-9 h-9 rounded-xl bg-red text-white shadow-[0_0_20px_-4px_rgba(225,29,43,.8)]">
         <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M5 17a2 2 0 0 1-2-2v-2.5a3 3 0 0 1 .9-2.1l1.4-1.4A4 4 0 0 1 8.1 7.8h7.8a4 4 0 0 1 2.8 1.2l1.4 1.4a3 3 0 0 1 .9 2.1V15a2 2 0 0 1-2 2"/><circle cx="7.5" cy="17.5" r="1.6"/><circle cx="16.5" cy="17.5" r="1.6"/></svg>
       </span>
       <span class="font-display font-extrabold text-2xl tracking-tight uppercase">Candi<span class="text-red">Car</span></span>
     </button>
-    <nav class="hidden md:flex items-center gap-7 text-sm font-bold text-white/55">
-      <button onclick="nav('resultats')" class="nav-link uppercase tracking-wide" data-nav="resultats">Rechercher un moniteur</button>
-      <button onclick="nav('formules')" class="nav-link uppercase tracking-wide" data-nav="formules">Donner des cours</button>
-      <button onclick="nav('home')" class="nav-link uppercase tracking-wide">Aide</button>
-    </nav>
-    <div class="flex items-center gap-2">
-      <button onclick="nav('connexion')" class="hidden sm:inline-flex text-sm font-bold px-3 py-2 rounded-full text-white/80 hover:bg-white/5">Connexion</button>
-      <button onclick="nav('connexion')" class="text-sm font-extrabold px-4 py-2 rounded-full bg-red text-white hover:bg-red-bright transition shadow-[0_0_24px_-6px_rgba(225,29,43,.9)] active:scale-95">Inscription</button>
-      <button onclick="toggleMenu()" class="md:hidden grid place-items-center w-9 h-9 rounded-lg hover:bg-white/5 text-white">
-        <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
-    </div>
-  </div>
-  <div id="mobileMenu" class="hidden md:hidden border-t border-white/10 bg-noir px-5 py-3 space-y-1 text-sm font-bold text-white/80">
-    <button onclick="nav('resultats')" class="block w-full text-left py-2">Rechercher un moniteur</button>
-    <button onclick="nav('formules')" class="block w-full text-left py-2">Donner des cours</button>
-    <button onclick="nav('home')" class="block w-full text-left py-2">Aide</button>
-    <button onclick="nav('connexion')" class="block w-full text-left py-2">Connexion</button>
+    <button onclick="openMenu()" aria-label="Menu" class="grid place-items-center w-11 h-11 rounded-xl bg-panel2 border border-white/10 hover:border-red transition text-white">
+      <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
   </div>
 </header>
 
+<!-- ====================== MENU OVERLAY (modèle Superprof / photo 3) ====================== -->
+<div id="menuOverlay" class="hidden fixed inset-0 z-50 bg-noir/97 backdrop-blur-md overflow-y-auto">
+  <div class="max-w-md mx-auto px-6 pt-6 pb-12">
+    <div class="flex justify-end">
+      <button onclick="closeMenu()" aria-label="Fermer" class="w-11 h-11 rounded-full bg-red text-white grid place-items-center hover:bg-red-bright transition">
+        <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+
+    <div class="mt-4 space-y-3">
+      <button onclick="goConnexion()" class="w-full py-4 rounded-2xl bg-red text-white font-extrabold uppercase tracking-wide hover:bg-red-bright transition shadow-[0_0_30px_-8px_rgba(225,29,43,.9)]">Connexion</button>
+      <button onclick="goConnexion()" class="w-full py-4 rounded-2xl bg-panel2 border border-white/10 text-white font-extrabold uppercase tracking-wide hover:border-white/30 transition">Inscription</button>
+    </div>
+
+    <div class="h-px bg-white/10 my-7"></div>
+
+    <div class="space-y-1">
+      <button onclick="goNav('resultats')" class="w-full flex items-center gap-4 py-4 text-lg font-bold text-white/90 hover:text-red transition">
+        <svg viewBox="0 0 24 24" class="w-6 h-6 text-white/40" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+        Rechercher un moniteur
+      </button>
+      <button onclick="goNav('formules')" class="w-full flex items-center gap-4 py-4 text-lg font-bold text-white/90 hover:text-red transition">
+        <svg viewBox="0 0 24 24" class="w-6 h-6 text-white/40" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+        Donner des cours
+      </button>
+      <button onclick="goNav('home')" class="w-full flex items-center gap-4 py-4 text-lg font-bold text-white/90 hover:text-red transition">
+        <svg viewBox="0 0 24 24" class="w-6 h-6 text-white/40" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7M12 17h.01"/></svg>
+        Aide
+      </button>
+    </div>
+  </div>
+</div>
+
 <main>
 
-<!-- ====================== ECRAN 1 : ACCUEIL / RECHERCHE ====================== -->
+<!-- ====================== ECRAN 1 : PRÉSENTATION ====================== -->
 <section id="home" class="screen active">
   <div class="max-w-5xl mx-auto px-5 pt-8 md:pt-12 pb-16">
 
@@ -119,67 +135,40 @@
       Trouvez votre <span class="text-red">moniteur</span><br>près de chez vous.
     </h1>
 
-    <!-- Chips façon maquette wallpaper -->
-    <div class="rise flex flex-wrap justify-center gap-2 mt-7" style="animation-delay:.18s">
-      <button onclick="nav('resultats')" class="text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10 hover:border-red hover:text-red transition">📍 Autour de moi</button>
-      <button onclick="nav('resultats')" class="text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10 hover:border-red hover:text-red transition">⚙️ Boîte manuelle</button>
-      <button onclick="nav('resultats')" class="text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10 hover:border-red hover:text-red transition">🅰️ Boîte auto</button>
-      <button onclick="nav('resultats')" class="text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10 hover:border-red hover:text-red transition">★ Mieux notés</button>
-    </div>
-
-    <!-- "ECRAN" voiture (structure maquette wallpaper) -->
-    <div class="rise mt-6 rounded-[1.6rem] glow-red overflow-hidden relative bg-noir aspect-[16/10] sm:aspect-[16/9]" style="animation-delay:.24s">
-      <!-- ====== ILLUSTRATION SVG (remplaçable par une vraie photo libre de droits) ====== -->
+    <!-- "ECRAN" voiture (structure maquette wallpaper) — recherche uniquement, épuré -->
+    <div class="rise mt-8 rounded-[1.6rem] glow-red overflow-hidden relative bg-noir aspect-[16/10] sm:aspect-[16/9]" style="animation-delay:.2s">
       <svg viewBox="0 0 720 405" class="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice" aria-label="Voiture de sport">
         <rect width="720" height="405" fill="#070708"/>
         <ellipse cx="360" cy="250" rx="300" ry="150" fill="url(#floorRefl)" filter="url(#soft)"/>
-        <!-- fumée -->
         <ellipse class="smoke" cx="150" cy="230" rx="120" ry="60" fill="rgba(225,29,43,.18)" filter="url(#soft)"/>
         <ellipse class="smoke" style="animation-delay:-4s" cx="580" cy="210" rx="130" ry="70" fill="rgba(255,255,255,.07)" filter="url(#soft)"/>
-        <!-- reflet sol -->
         <rect y="360" width="720" height="45" fill="#0c0c10"/>
         <ellipse cx="360" cy="362" rx="250" ry="14" fill="rgba(225,29,43,.25)" filter="url(#soft)"/>
-        <!-- VOITURE (vue de face 3/4 stylisée) -->
         <g>
-          <!-- corps bas -->
           <path d="M110 300 C110 244 165 210 250 202 L470 202 C555 210 610 244 610 300 L610 332 C610 348 596 358 578 358 L142 358 C124 358 110 348 110 332 Z" fill="url(#bodyRed)"/>
-          <!-- capot + cabine -->
           <path d="M250 205 C266 168 302 152 360 152 C418 152 454 168 470 205 Z" fill="url(#bodyRed)"/>
-          <!-- pare-brise -->
           <path d="M288 202 C302 176 327 166 360 166 C393 166 418 176 432 202 Z" fill="url(#glass)"/>
-          <!-- arête capot -->
           <path d="M360 168 L360 250" stroke="rgba(0,0,0,.35)" stroke-width="2"/>
           <path d="M315 210 L330 250 M405 210 L390 250" stroke="rgba(0,0,0,.25)" stroke-width="2" fill="none"/>
-          <!-- liseré rouge haut (rim light) -->
           <path d="M250 205 C266 168 302 152 360 152 C418 152 454 168 470 205" fill="none" stroke="#ff5666" stroke-width="2.5" opacity=".7"/>
-          <!-- phares en lame -->
           <path d="M468 224 L556 240 L551 262 L466 248 Z" fill="#eaf6ff" filter="url(#hl)"/>
           <path d="M252 224 L164 240 L169 262 L254 248 Z" fill="#eaf6ff" filter="url(#hl)"/>
           <path d="M470 230 L548 244 L545 256 L469 244 Z" fill="#ffffff"/>
           <path d="M250 230 L172 244 L175 256 L251 244 Z" fill="#ffffff"/>
-          <!-- prises d'air basses -->
           <path d="M150 318 L250 318 L238 350 L162 350 Z" fill="#0b0b0e"/>
           <path d="M470 318 L570 318 L558 350 L482 350 Z" fill="#0b0b0e"/>
-          <!-- calandre centrale -->
           <path d="M300 320 L420 320 L408 350 L312 350 Z" fill="#0e0e12"/>
           <path d="M312 330 H408 M315 340 H405" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
-          <!-- splitter -->
           <rect x="150" y="350" width="420" height="6" rx="3" fill="#1a1a20"/>
           <rect x="150" y="350" width="420" height="2.5" rx="2" fill="rgba(255,255,255,.18)"/>
-          <!-- emblème -->
           <circle cx="360" cy="232" r="7" fill="#0b0b0e" stroke="#ff5666" stroke-width="1.5"/>
-          <!-- roues -->
           <ellipse cx="170" cy="350" rx="40" ry="20" fill="#08080a"/>
           <ellipse cx="550" cy="350" rx="40" ry="20" fill="#08080a"/>
         </g>
       </svg>
+      <div class="absolute inset-0 bg-gradient-to-t from-noir via-noir/30 to-transparent"></div>
 
-      <!-- scrim pour lisibilité -->
-      <div class="absolute inset-0 bg-gradient-to-t from-noir via-noir/40 to-noir/30"></div>
-
-      <!-- overlay texte + recherche -->
-      <div class="absolute inset-0 flex flex-col items-center justify-end p-5 sm:p-8 text-center">
-        <p class="font-display font-bold text-xl sm:text-2xl uppercase tracking-wide text-white drop-shadow mb-3">Trouvez votre moniteur près de chez vous !</p>
+      <div class="absolute inset-0 flex flex-col items-center justify-end p-5 sm:p-8">
         <div class="w-full max-w-lg bg-white rounded-2xl p-1.5 flex items-center gap-2 shadow-2xl">
           <svg viewBox="0 0 24 24" class="w-5 h-5 ml-3 text-noir/40 shrink-0" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
           <input type="text" placeholder="Ville, code postal…" class="flex-1 bg-transparent outline-none text-noir text-base placeholder:text-noir/40 min-w-0">
@@ -188,12 +177,12 @@
       </div>
     </div>
 
-    <!-- Toggle façon Landscape/Portrait de la maquette wallpaper -->
-    <div class="rise mt-4 max-w-lg mx-auto bg-panel2 border border-white/10 rounded-2xl p-1 grid grid-cols-2 text-sm font-bold" style="animation-delay:.3s">
-      <button onclick="setBoite(this,0)" class="boite-btn py-3 rounded-xl bg-red text-white flex items-center justify-center gap-2 transition">
+    <!-- Toggle boîte : manuelle (rouge) / automatique (blanc + bleu Doctolib) -->
+    <div class="rise mt-4 max-w-lg mx-auto bg-panel2 border border-white/10 rounded-2xl p-1 grid grid-cols-2 text-sm" style="animation-delay:.28s">
+      <button id="btnManuelle" onclick="setBoite(0)" class="boite-btn py-3 rounded-xl bg-red text-white flex items-center justify-center gap-2 transition font-bold">
         <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 5v4M12 15v4M5 12h4M15 12h4"/></svg> Boîte manuelle
       </button>
-      <button onclick="setBoite(this,1)" class="boite-btn py-3 rounded-xl text-white/60 flex items-center justify-center gap-2 transition">
+      <button id="btnAuto" onclick="setBoite(1)" class="boite-btn py-3 rounded-xl text-blue-light flex items-center justify-center gap-2 transition font-bold">
         <span class="font-display font-extrabold text-base">A</span> Boîte automatique
       </button>
     </div>
@@ -206,7 +195,7 @@
       <div class="bg-panel border border-white/10 rounded-2xl p-6 hover:border-red/50 transition">
         <div class="font-display font-extrabold text-red text-3xl">01</div>
         <h3 class="font-extrabold text-lg mt-1">Cherchez</h3>
-        <p class="text-white/50 text-sm mt-1">Filtrez par ville, type de boîte et prix. Comparez les avis.</p>
+        <p class="text-white/50 text-sm mt-1">Filtrez par ville, type de boîte et prix.</p>
       </div>
       <div class="bg-panel border border-white/10 rounded-2xl p-6 hover:border-red/50 transition">
         <div class="font-display font-extrabold text-red text-3xl">02</div>
@@ -231,7 +220,7 @@
   </div>
 </section>
 
-<!-- ====================== ECRAN 2 : RESULTATS ====================== -->
+<!-- ====================== ECRAN 2 : RÉSULTATS (fiches moniteurs) ====================== -->
 <section id="resultats" class="screen">
   <div class="relative max-w-6xl mx-auto px-5 py-8 md:py-10">
     <svg viewBox="0 0 240 110" class="car-watermark -right-6 top-0 w-64"><path d="M15 78 q4 -2 12 -3 l10 -22 q5 -10 20 -11 l60 0 q14 1 22 11 l16 24 q18 1 28 6 q10 5 10 11 l-188 0 q-12 0 -12 -10 z M55 86 a14 14 0 1 0 0.1 0 M180 86 a14 14 0 1 0 0.1 0" fill="none" stroke="#E11D2B" stroke-width="3"/></svg>
@@ -242,17 +231,16 @@
     <p class="text-white/50 mt-1">14 moniteurs disponibles près de vous</p>
 
     <div class="flex flex-wrap items-center gap-2 mt-6">
-      <button onclick="toggleChip(this)" class="chip text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10">Boîte manuelle</button>
-      <button onclick="toggleChip(this)" class="chip text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10">Boîte auto</button>
-      <button onclick="toggleChip(this)" class="chip text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10">≤ 30 €/h</button>
-      <button onclick="toggleChip(this)" class="chip text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10">★ 4,5+</button>
+      <button onclick="toggleChip(this,'red')" data-active="0" class="text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10">Boîte manuelle</button>
+      <button onclick="toggleChip(this,'blue')" data-active="0" class="text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10">Boîte auto</button>
+      <button onclick="toggleChip(this,'red')" data-active="0" class="text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10">≤ 30 €/h</button>
     </div>
 
     <div id="resultsList" class="grid sm:grid-cols-2 gap-4 mt-7"></div>
   </div>
 </section>
 
-<!-- ====================== ECRAN 3 : FICHE MONITEUR + PLANNING ====================== -->
+<!-- ====================== ECRAN 3 : FICHE MONITEUR + PLANNING + AVIS ====================== -->
 <section id="profil" class="screen">
   <div class="relative max-w-5xl mx-auto px-5 py-8 md:py-10">
     <svg viewBox="0 0 240 110" class="car-watermark right-0 -top-2 w-56"><path d="M15 78 q4 -2 12 -3 l10 -22 q5 -10 20 -11 l60 0 q14 1 22 11 l16 24 q18 1 28 6 q10 5 10 11 l-188 0 q-12 0 -12 -10 z M55 86 a14 14 0 1 0 0.1 0 M180 86 a14 14 0 1 0 0.1 0" fill="none" stroke="#E11D2B" stroke-width="3"/></svg>
@@ -276,8 +264,7 @@
           <span class="font-display font-extrabold text-3xl text-red">28 €<span class="text-base font-bold text-white/40">/h</span></span>
         </div>
         <div class="flex flex-wrap gap-2 mt-4">
-          <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-white text-noir">⚙️ Boîte manuelle</span>
-          <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-red/15 text-red border border-red/30">★ 4,9 · 87 avis</span>
+          <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-red/15 text-red border border-red/30">⚙️ Boîte manuelle</span>
           <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-dispo/15 text-dispo border border-dispo/30">● 3 créneaux aujourd'hui</span>
         </div>
         <p class="text-white/60 mt-4 text-sm leading-relaxed">Moniteur diplômé depuis 9 ans, patient et pédagogue. Spécialiste de l'examen en candidat libre. Véhicule double commande.</p>
@@ -295,20 +282,36 @@
         </div>
       </div>
       <p class="text-white/40 text-sm mt-2 mb-4">Cliquez sur un créneau <span class="text-dispo font-bold">vert</span> pour le réserver.</p>
-
       <div class="overflow-x-auto -mx-1 px-1">
         <div id="calendar" class="min-w-[640px]"></div>
       </div>
-
       <button onclick="nav('connexion')" class="mt-6 w-full font-extrabold uppercase tracking-wide px-6 py-4 rounded-2xl bg-red text-white hover:bg-red-bright transition flex items-center justify-center gap-2 shadow-[0_0_30px_-8px_rgba(225,29,43,.9)]">
         <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         Contacter Karim
       </button>
     </div>
+
+    <!-- AVIS (sans note chiffrée, mais on peut en laisser un) -->
+    <div class="mt-6 bg-panel border border-white/10 rounded-3xl p-5 md:p-7">
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <h2 class="font-display font-extrabold uppercase text-2xl tracking-tight">Avis des élèves</h2>
+        <button onclick="toast('Formulaire avis (démo)')" class="text-sm font-extrabold uppercase tracking-wide px-4 py-2.5 rounded-full bg-red text-white hover:bg-red-bright transition">Laisser un avis</button>
+      </div>
+      <div class="mt-4 grid sm:grid-cols-2 gap-3">
+        <div class="bg-panel2 rounded-2xl p-4">
+          <p class="text-white/80 text-sm leading-relaxed">« Super pédagogue, j'ai eu mon permis du premier coup. »</p>
+          <p class="text-white/40 text-xs mt-3 font-bold">— Yanis, mars 2026</p>
+        </div>
+        <div class="bg-panel2 rounded-2xl p-4">
+          <p class="text-white/80 text-sm leading-relaxed">« Patient et toujours à l'heure, je recommande les yeux fermés. »</p>
+          <p class="text-white/40 text-xs mt-3 font-bold">— Inès, février 2026</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- ====================== ECRAN 4 : CONNEXION ====================== -->
+<!-- ====================== ECRAN 4 : CONNEXION (modèle photo 2) ====================== -->
 <section id="connexion" class="screen">
   <div class="relative max-w-md mx-auto px-5 py-12 md:py-16 text-center">
     <button onclick="back()" class="absolute left-5 top-12 text-white/40 hover:text-white">
@@ -352,7 +355,6 @@
       <h1 class="font-display font-extrabold uppercase text-4xl md:text-5xl tracking-tight">Choisissez votre formule</h1>
       <p class="text-white/55 mt-3 max-w-lg mx-auto">Payez à l'heure ou en forfait. Sans engagement, annulation jusqu'à 24 h avant.</p>
     </div>
-
     <div class="grid md:grid-cols-3 gap-4 mt-10 items-stretch">
       <div class="bg-panel border border-white/10 rounded-3xl p-7 flex flex-col">
         <span class="text-xs font-bold uppercase tracking-widest text-white/40">Découverte</span>
@@ -365,7 +367,6 @@
         </ul>
         <button onclick="nav('connexion')" class="mt-6 w-full font-extrabold uppercase tracking-wide px-5 py-3.5 rounded-2xl border-2 border-white/15 hover:border-white transition">Choisir</button>
       </div>
-
       <div class="relative overflow-hidden bg-gradient-to-b from-red to-red-dark rounded-3xl p-7 flex flex-col md:scale-[1.04] shadow-[0_0_50px_-12px_rgba(225,29,43,.8)]">
         <span class="absolute right-5 top-5 text-[10px] font-extrabold uppercase tracking-widest bg-white text-red px-2.5 py-1 rounded-full">Populaire</span>
         <span class="text-xs font-bold uppercase tracking-widest text-white/80">Forfait 10 h</span>
@@ -379,7 +380,6 @@
         </ul>
         <button onclick="nav('connexion')" class="mt-6 w-full font-extrabold uppercase tracking-wide px-5 py-3.5 rounded-2xl bg-white text-red hover:bg-white/90 transition active:scale-[.98]">Choisir</button>
       </div>
-
       <div class="bg-panel border border-white/10 rounded-3xl p-7 flex flex-col">
         <span class="text-xs font-bold uppercase tracking-widest text-white/40">Forfait 20 h</span>
         <div class="font-display font-extrabold text-5xl mt-2">560 €</div>
@@ -398,21 +398,15 @@
 
 </main>
 
-<!-- ====================== FOOTER ====================== -->
 <footer class="relative mt-10 border-t border-white/10 overflow-hidden">
   <svg viewBox="0 0 240 110" class="car-watermark left-1/2 -translate-x-1/2 bottom-0 w-80" style="opacity:.05"><path d="M15 78 q4 -2 12 -3 l10 -22 q5 -10 20 -11 l60 0 q14 1 22 11 l16 24 q18 1 28 6 q10 5 10 11 l-188 0 q-12 0 -12 -10 z M55 86 a14 14 0 1 0 0.1 0 M180 86 a14 14 0 1 0 0.1 0" fill="none" stroke="#fff" stroke-width="3"/></svg>
   <div class="relative max-w-6xl mx-auto px-5 py-10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/50">
     <div class="font-display font-extrabold uppercase text-xl text-white">Candi<span class="text-red">Car</span></div>
     <p>Moniteurs ↔ candidats libres · Maquette de démonstration</p>
-    <div class="flex gap-4 font-bold">
-      <button class="hover:text-white">Aide</button>
-      <button class="hover:text-white">Mentions légales</button>
-      <button class="hover:text-white">Contact</button>
-    </div>
   </div>
 </footer>
 
-<div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-white text-noir px-5 py-3.5 rounded-2xl shadow-2xl text-sm font-bold flex items-center gap-3"></div>
+<div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] bg-white text-noir px-5 py-3.5 rounded-2xl shadow-2xl text-sm font-bold flex items-center gap-3"></div>
 
 <script>
   let history = ['home'];
@@ -420,41 +414,65 @@
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
     if (history[history.length-1] !== id) history.push(id);
-    document.querySelectorAll('[data-nav]').forEach(b => b.classList.toggle('active-nav', b.dataset.nav === id));
-    document.getElementById('mobileMenu').classList.add('hidden');
     window.scrollTo({ top: 0 });
   }
   function back() { history.pop(); nav(history.pop() || 'home'); }
-  function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('hidden'); }
-  function toggleChip(el) {
-    el.classList.toggle('bg-red'); el.classList.toggle('text-white');
-    el.classList.toggle('border-red'); el.classList.toggle('bg-panel2');
+
+  function openMenu() { document.getElementById('menuOverlay').classList.remove('hidden'); }
+  function closeMenu() { document.getElementById('menuOverlay').classList.add('hidden'); }
+  function goNav(id) { closeMenu(); nav(id); }
+  function goConnexion() { closeMenu(); nav('connexion'); }
+
+  function toggleChip(el, color) {
+    const active = el.dataset.active === '1';
+    el.dataset.active = active ? '0' : '1';
+    el.classList.toggle('bg-panel2', active);
+    if (color === 'blue') {
+      el.classList.toggle('bg-white', !active);
+      el.classList.toggle('text-blue', !active);
+      el.classList.toggle('border-blue', !active);
+    } else {
+      el.classList.toggle('bg-red', !active);
+      el.classList.toggle('text-white', !active);
+      el.classList.toggle('border-red', !active);
+    }
   }
-  function setBoite(el, i) {
-    document.querySelectorAll('.boite-btn').forEach((b,bi) => {
-      const on = bi === i;
-      b.classList.toggle('bg-red', on); b.classList.toggle('text-white', on);
-      b.classList.toggle('text-white/60', !on);
-    });
+
+  function setBoite(i) {
+    const m = document.getElementById('btnManuelle'), a = document.getElementById('btnAuto');
+    if (i === 0) {
+      m.className = 'boite-btn py-3 rounded-xl bg-red text-white flex items-center justify-center gap-2 transition font-bold';
+      a.className = 'boite-btn py-3 rounded-xl text-blue-light flex items-center justify-center gap-2 transition font-bold';
+    } else {
+      m.className = 'boite-btn py-3 rounded-xl text-white/60 flex items-center justify-center gap-2 transition font-bold';
+      a.className = 'boite-btn py-3 rounded-xl bg-blue text-white flex items-center justify-center gap-2 transition font-bold';
+    }
   }
+
   function toast(msg) {
     const t = document.getElementById('toast');
     t.innerHTML = '<svg viewBox="0 0 24 24" class="w-5 h-5 text-red" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>' + msg;
     t.classList.remove('hidden'); t.classList.add('toast');
     clearTimeout(window._tt);
-    window._tt = setTimeout(() => { t.classList.add('hidden'); t.classList.remove('toast'); }, 3200);
+    window._tt = setTimeout(() => { t.classList.add('hidden'); t.classList.remove('toast'); }, 3000);
   }
 
+  // Moniteurs (démo) — sans note chiffrée
   const moniteurs = [
-    { i:'K', n:'Karim B.', v:'Paris 11ᵉ', boite:'Manuelle', prix:28, note:4.9, avis:87, dispo:3 },
-    { i:'L', n:'Laura M.', v:'Paris 15ᵉ', boite:'Auto', prix:32, note:4.8, avis:54, dispo:1 },
-    { i:'S', n:'Sofiane R.', v:'Montreuil', boite:'Manuelle', prix:25, note:4.7, avis:120, dispo:5 },
-    { i:'A', n:'Aïcha D.', v:'Paris 20ᵉ', boite:'Auto', prix:30, note:5.0, avis:33, dispo:2 },
+    { i:'K', n:'Karim B.', v:'Paris 11ᵉ', boite:'Manuelle', prix:28, dispo:3 },
+    { i:'L', n:'Laura M.', v:'Paris 15ᵉ', boite:'Auto', prix:32, dispo:1 },
+    { i:'S', n:'Sofiane R.', v:'Montreuil', boite:'Manuelle', prix:25, dispo:5 },
+    { i:'A', n:'Aïcha D.', v:'Paris 20ᵉ', boite:'Auto', prix:30, dispo:2 },
   ];
   function renderResults() {
-    document.getElementById('resultsList').innerHTML = moniteurs.map(m => `
+    document.getElementById('resultsList').innerHTML = moniteurs.map(m => {
+      const auto = m.boite === 'Auto';
+      const badge = auto
+        ? '<span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-blue text-white">🅰️ Auto</span>'
+        : '<span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-red/15 text-red border border-red/30">⚙️ Manuelle</span>';
+      return `
       <button onclick="nav('profil')" class="text-left bg-panel border border-white/10 rounded-2xl p-5 hover:border-red/50 hover:-translate-y-1 transition flex gap-4">
-        <div class="shrink-0 w-16 h-16 rounded-2xl bg-red/15 border border-red/30 grid place-items-center text-red font-display font-extrabold text-3xl">${m.i}</div>
+        <div class="shrink-0 w-16 h-16 rounded-2xl ${auto?'bg-blue/15 border-blue/30 text-blue-light':'bg-red/15 border-red/30 text-red'} border grid place-items-center font-display font-extrabold text-3xl">${m.i}</div>
         <div class="flex-1 min-w-0">
           <div class="flex items-start justify-between gap-2">
             <div>
@@ -466,12 +484,12 @@
             <span class="font-display font-extrabold text-xl text-red shrink-0">${m.prix}€<span class="text-xs font-bold text-white/40">/h</span></span>
           </div>
           <div class="flex flex-wrap items-center gap-1.5 mt-3">
-            <span class="text-[11px] font-bold px-2.5 py-1 rounded-full ${m.boite==='Manuelle'?'bg-white text-noir':'bg-red/15 text-red border border-red/30'}">${m.boite==='Manuelle'?'⚙️':'🅰️'} ${m.boite}</span>
-            <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-red/10 text-red">★ ${m.note.toString().replace('.',',')} · ${m.avis}</span>
+            ${badge}
             <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-dispo/15 text-dispo">● ${m.dispo} dispo</span>
           </div>
         </div>
-      </button>`).join('');
+      </button>`;
+    }).join('');
   }
 
   const jours = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
