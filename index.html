@@ -7,23 +7,23 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700;12..96,800&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@600;700;800;900&family=Hanken+Grotesk:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script>
   tailwind.config = {
     theme: {
       extend: {
         fontFamily: {
-          display: ['"Bricolage Grotesque"', 'sans-serif'],
+          display: ['"Saira Condensed"', 'sans-serif'],
           sans: ['"Hanken Grotesk"', 'sans-serif'],
         },
         colors: {
-          ink: '#16130F',
-          'ink-soft': '#272118',
-          cream: '#FBF8F1',
-          amber: { DEFAULT: '#F5B301', dark: '#D99A00', light: '#FFD45E' },
-          dispo: '#15803D',
-          reserve: '#DC2626',
-          indispo: '#A8A29E',
+          noir: '#0A0A0C',
+          panel: '#141418',
+          panel2: '#1C1C22',
+          red: { DEFAULT: '#E11D2B', bright: '#FF2A3A', dark: '#A50D18' },
+          dispo: '#22C55E',
+          reserve: '#EF4444',
+          indispo: '#52525B',
         },
       },
     },
@@ -32,69 +32,75 @@
 <style>
   html { scroll-behavior: smooth; }
   body {
-    background-color: #FBF8F1;
+    background-color: #0A0A0C;
+    color: #F5F5F7;
     background-image:
-      radial-gradient(circle at 1px 1px, rgba(22,19,15,0.05) 1px, transparent 0);
-    background-size: 22px 22px;
-  }
-  /* Marquage au sol : ligne pointillée jaune signature */
-  .road-line {
-    height: 5px;
-    background-image: repeating-linear-gradient(90deg, #F5B301 0 38px, transparent 38px 70px);
-    border-radius: 99px;
-  }
-  .road-line-v {
-    width: 5px;
-    background-image: repeating-linear-gradient(180deg, #F5B301 0 26px, transparent 26px 50px);
-    border-radius: 99px;
-  }
-  .grain::before {
-    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5; mix-blend-mode: overlay;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      radial-gradient(700px 380px at 50% -120px, rgba(225,29,43,.20), transparent 70%),
+      radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 0);
+    background-size: auto, 24px 24px;
   }
   .screen { display: none; }
   .screen.active { display: block; animation: fade .45s ease both; }
   @keyframes fade { from { opacity: 0; transform: translateY(10px);} to { opacity: 1; transform: none;} }
-  @keyframes rise { from { opacity: 0; transform: translateY(18px);} to { opacity: 1; transform: none;} }
-  .rise { opacity: 0; animation: rise .7s cubic-bezier(.2,.7,.2,1) forwards; }
+  @keyframes rise { from { opacity: 0; transform: translateY(20px);} to { opacity: 1; transform: none;} }
+  .rise { opacity: 0; animation: rise .8s cubic-bezier(.2,.7,.2,1) forwards; }
+  .glow-red { box-shadow: 0 0 0 1px rgba(225,29,43,.4), 0 0 40px -8px rgba(225,29,43,.5), inset 0 0 60px -30px rgba(225,29,43,.6); }
   .slot { transition: transform .12s ease, filter .12s ease; }
-  .slot:hover { transform: translateY(-1px); filter: brightness(1.04); }
-  .nav-link.active-nav { color: #16130F; }
-  .nav-link.active-nav::after { width: 100%; }
-  .nav-link::after { content:""; display:block; height:2px; width:0; background:#F5B301; transition:width .25s ease; }
+  .slot:hover { transform: translateY(-1px); filter: brightness(1.12); }
+  .nav-link::after { content:""; display:block; height:2px; width:0; background:#E11D2B; transition:width .25s ease; }
+  .nav-link:hover::after, .nav-link.active-nav::after { width: 100%; }
+  .nav-link.active-nav { color:#fff; }
   ::-webkit-scrollbar { height: 8px; width: 8px; }
-  ::-webkit-scrollbar-thumb { background: #d8d2c5; border-radius: 99px; }
+  ::-webkit-scrollbar-thumb { background:#2a2a33; border-radius: 99px; }
   .toast { animation: pop .35s cubic-bezier(.2,.8,.2,1) both; }
   @keyframes pop { from { opacity:0; transform: translate(-50%, 12px);} to {opacity:1; transform: translate(-50%,0);} }
+  @keyframes drift { 0%{transform:translateX(0) scale(1);opacity:.5} 50%{opacity:.8} 100%{transform:translateX(40px) scale(1.15);opacity:.3} }
+  .smoke { animation: drift 9s ease-in-out infinite alternate; }
+  .car-watermark { position:absolute; pointer-events:none; opacity:.06; }
 </style>
 </head>
-<body class="font-sans text-ink antialiased">
+<body class="font-sans antialiased">
+
+<!-- ===== SVG réutilisables : voiture détaillée + voiture trait ===== -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <linearGradient id="bodyRed" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5e0a0a"/><stop offset=".45" stop-color="#E11D2B"/><stop offset="1" stop-color="#8c0410"/>
+    </linearGradient>
+    <linearGradient id="glass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#3a3a45"/><stop offset="1" stop-color="#0b0b10"/>
+    </linearGradient>
+    <radialGradient id="floorRefl" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="rgba(225,29,43,.35)"/><stop offset="1" stop-color="transparent"/>
+    </radialGradient>
+    <filter id="hl" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="3.5"/></filter>
+    <filter id="soft" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="22"/></filter>
+  </defs>
+</svg>
 
 <!-- ====================== NAV ====================== -->
-<header class="sticky top-0 z-40 bg-cream/85 backdrop-blur-md border-b border-ink/10">
+<header class="sticky top-0 z-40 bg-noir/80 backdrop-blur-md border-b border-white/10">
   <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
-    <button onclick="nav('home')" class="flex items-center gap-2 group">
-      <span class="grid place-items-center w-9 h-9 rounded-xl bg-ink text-amber">
+    <button onclick="nav('home')" class="flex items-center gap-2.5 group">
+      <span class="grid place-items-center w-9 h-9 rounded-xl bg-red text-white shadow-[0_0_20px_-4px_rgba(225,29,43,.8)]">
         <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14M5 17a2 2 0 0 1-2-2v-2.5a3 3 0 0 1 .9-2.1l1.4-1.4A4 4 0 0 1 8.1 7.8h7.8a4 4 0 0 1 2.8 1.2l1.4 1.4a3 3 0 0 1 .9 2.1V15a2 2 0 0 1-2 2"/><circle cx="7.5" cy="17.5" r="1.6"/><circle cx="16.5" cy="17.5" r="1.6"/></svg>
       </span>
-      <span class="font-display font-extrabold text-xl tracking-tight">Candi<span class="text-amber-dark">Car</span></span>
+      <span class="font-display font-extrabold text-2xl tracking-tight uppercase">Candi<span class="text-red">Car</span></span>
     </button>
-
-    <nav class="hidden md:flex items-center gap-7 text-sm font-semibold text-ink/60">
-      <button onclick="nav('resultats')" class="nav-link" data-nav="resultats">Rechercher un moniteur</button>
-      <button onclick="nav('formules')" class="nav-link" data-nav="formules">Donner des cours</button>
-      <button onclick="nav('home')" class="nav-link">Aide</button>
+    <nav class="hidden md:flex items-center gap-7 text-sm font-bold text-white/55">
+      <button onclick="nav('resultats')" class="nav-link uppercase tracking-wide" data-nav="resultats">Rechercher un moniteur</button>
+      <button onclick="nav('formules')" class="nav-link uppercase tracking-wide" data-nav="formules">Donner des cours</button>
+      <button onclick="nav('home')" class="nav-link uppercase tracking-wide">Aide</button>
     </nav>
-
     <div class="flex items-center gap-2">
-      <button onclick="nav('connexion')" class="hidden sm:inline-flex text-sm font-semibold px-3 py-2 rounded-full hover:bg-ink/5">Connexion</button>
-      <button onclick="nav('connexion')" class="text-sm font-bold px-4 py-2 rounded-full bg-amber text-ink hover:bg-amber-light transition shadow-[0_4px_0_#D99A00] active:translate-y-0.5 active:shadow-[0_2px_0_#D99A00]">Inscription</button>
-      <button onclick="toggleMenu()" class="md:hidden grid place-items-center w-9 h-9 rounded-lg hover:bg-ink/5">
+      <button onclick="nav('connexion')" class="hidden sm:inline-flex text-sm font-bold px-3 py-2 rounded-full text-white/80 hover:bg-white/5">Connexion</button>
+      <button onclick="nav('connexion')" class="text-sm font-extrabold px-4 py-2 rounded-full bg-red text-white hover:bg-red-bright transition shadow-[0_0_24px_-6px_rgba(225,29,43,.9)] active:scale-95">Inscription</button>
+      <button onclick="toggleMenu()" class="md:hidden grid place-items-center w-9 h-9 rounded-lg hover:bg-white/5 text-white">
         <svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
       </button>
     </div>
   </div>
-  <div id="mobileMenu" class="hidden md:hidden border-t border-ink/10 bg-cream px-5 py-3 space-y-1 text-sm font-semibold">
+  <div id="mobileMenu" class="hidden md:hidden border-t border-white/10 bg-noir px-5 py-3 space-y-1 text-sm font-bold text-white/80">
     <button onclick="nav('resultats')" class="block w-full text-left py-2">Rechercher un moniteur</button>
     <button onclick="nav('formules')" class="block w-full text-left py-2">Donner des cours</button>
     <button onclick="nav('home')" class="block w-full text-left py-2">Aide</button>
@@ -106,165 +112,195 @@
 
 <!-- ====================== ECRAN 1 : ACCUEIL / RECHERCHE ====================== -->
 <section id="home" class="screen active">
-  <!-- HERO -->
-  <div class="relative overflow-hidden">
-    <div class="max-w-6xl mx-auto px-5 pt-12 md:pt-20 pb-14 md:pb-24 grid md:grid-cols-2 gap-10 items-center">
-      <div>
-        <span class="rise inline-flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-amber-dark bg-amber/15 px-3 py-1.5 rounded-full" style="animation-delay:.05s">
-          <span class="w-1.5 h-1.5 rounded-full bg-amber-dark"></span> 1ʳᵉ plateforme moniteur ↔ candidat libre
-        </span>
-        <h1 class="rise font-display font-extrabold tracking-tight text-5xl sm:text-6xl md:text-[4.2rem] leading-[0.95] mt-5" style="animation-delay:.12s">
-          Trouvez votre<br>moniteur <span class="relative inline-block">près<span class="absolute left-0 -bottom-1 w-full h-2 bg-amber/60 -z-0 rounded"></span></span><br>de chez vous.
-        </h1>
-        <p class="rise text-ink/60 text-lg mt-5 max-w-md" style="animation-delay:.2s">
-          Passez le permis en candidat libre, à votre rythme. Comparez les moniteurs, réservez un créneau, c'est tout.
-        </p>
+  <div class="max-w-5xl mx-auto px-5 pt-8 md:pt-12 pb-16">
 
-        <!-- Barre de recherche -->
-        <div class="rise mt-8 bg-white rounded-2xl p-2 shadow-[0_18px_40px_-18px_rgba(22,19,15,.35)] border border-ink/5 flex items-center gap-2" style="animation-delay:.28s">
-          <svg viewBox="0 0 24 24" class="w-5 h-5 ml-3 text-ink/40 shrink-0" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
-          <input type="text" placeholder="Ville, code postal…" class="flex-1 bg-transparent outline-none text-base placeholder:text-ink/35 min-w-0">
-          <button onclick="nav('resultats')" class="shrink-0 font-bold px-5 py-3 rounded-xl bg-ink text-amber hover:bg-ink-soft transition">Rechercher</button>
-        </div>
+    <p class="rise text-center text-red font-bold uppercase tracking-[.2em] text-xs" style="animation-delay:.05s">1ʳᵉ plateforme moniteur ↔ candidat libre en France</p>
+    <h1 class="rise font-display font-extrabold uppercase text-center tracking-tight text-5xl sm:text-6xl md:text-7xl leading-[0.9] mt-3" style="animation-delay:.1s">
+      Trouvez votre <span class="text-red">moniteur</span><br>près de chez vous.
+    </h1>
 
-        <!-- chips -->
-        <div class="rise flex flex-wrap gap-2 mt-4" style="animation-delay:.36s">
-          <button onclick="nav('resultats')" class="text-sm font-semibold px-3.5 py-1.5 rounded-full bg-white border border-ink/10 hover:border-amber hover:text-amber-dark transition">📍 Autour de moi</button>
-          <button onclick="nav('resultats')" class="text-sm font-semibold px-3.5 py-1.5 rounded-full bg-white border border-ink/10 hover:border-amber hover:text-amber-dark transition">⚙️ Boîte manuelle</button>
-          <button onclick="nav('resultats')" class="text-sm font-semibold px-3.5 py-1.5 rounded-full bg-white border border-ink/10 hover:border-amber hover:text-amber-dark transition">🅰️ Boîte auto</button>
-        </div>
-      </div>
+    <!-- Chips façon maquette wallpaper -->
+    <div class="rise flex flex-wrap justify-center gap-2 mt-7" style="animation-delay:.18s">
+      <button onclick="nav('resultats')" class="text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10 hover:border-red hover:text-red transition">📍 Autour de moi</button>
+      <button onclick="nav('resultats')" class="text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10 hover:border-red hover:text-red transition">⚙️ Boîte manuelle</button>
+      <button onclick="nav('resultats')" class="text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10 hover:border-red hover:text-red transition">🅰️ Boîte auto</button>
+      <button onclick="nav('resultats')" class="text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10 hover:border-red hover:text-red transition">★ Mieux notés</button>
+    </div>
 
-      <!-- Illustration "voiture / route" -->
-      <div class="rise relative hidden md:block" style="animation-delay:.3s">
-        <div class="relative grain overflow-hidden rounded-[2rem] bg-ink p-8 aspect-[4/5] flex flex-col justify-between">
-          <div class="flex items-center justify-between text-cream/70 text-xs font-semibold">
-            <span class="flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-dispo"></span> 3 créneaux libres aujourd'hui</span>
-            <span>★ 4,9</span>
-          </div>
-          <div class="self-center text-amber">
-            <svg viewBox="0 0 200 120" class="w-56 h-auto" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20 80h160a8 8 0 0 0 8-8v-8a14 14 0 0 0-4-10l-10-10a20 20 0 0 0-14-6H58a22 22 0 0 0-16 7L28 56a16 16 0 0 0-12 15v1a8 8 0 0 0 8 8z"/>
-              <path d="M52 47l8-10a14 14 0 0 1 11-5h42a14 14 0 0 1 11 5l9 11"/>
-              <line x1="96" y1="32" x2="96" y2="59"/>
-              <circle cx="54" cy="82" r="11" fill="#16130F"/><circle cx="146" cy="82" r="11" fill="#16130F"/>
-            </svg>
-          </div>
-          <div class="road-line w-full opacity-90"></div>
-          <p class="text-cream/50 text-sm mt-4 font-medium leading-snug">« J'ai trouvé un moniteur à 2 km, réservé le soir même. »</p>
+    <!-- "ECRAN" voiture (structure maquette wallpaper) -->
+    <div class="rise mt-6 rounded-[1.6rem] glow-red overflow-hidden relative bg-noir aspect-[16/10] sm:aspect-[16/9]" style="animation-delay:.24s">
+      <!-- ====== ILLUSTRATION SVG (remplaçable par une vraie photo libre de droits) ====== -->
+      <svg viewBox="0 0 720 405" class="absolute inset-0 w-full h-full" preserveAspectRatio="xMidYMid slice" aria-label="Voiture de sport">
+        <rect width="720" height="405" fill="#070708"/>
+        <ellipse cx="360" cy="250" rx="300" ry="150" fill="url(#floorRefl)" filter="url(#soft)"/>
+        <!-- fumée -->
+        <ellipse class="smoke" cx="150" cy="230" rx="120" ry="60" fill="rgba(225,29,43,.18)" filter="url(#soft)"/>
+        <ellipse class="smoke" style="animation-delay:-4s" cx="580" cy="210" rx="130" ry="70" fill="rgba(255,255,255,.07)" filter="url(#soft)"/>
+        <!-- reflet sol -->
+        <rect y="360" width="720" height="45" fill="#0c0c10"/>
+        <ellipse cx="360" cy="362" rx="250" ry="14" fill="rgba(225,29,43,.25)" filter="url(#soft)"/>
+        <!-- VOITURE (vue de face 3/4 stylisée) -->
+        <g>
+          <!-- corps bas -->
+          <path d="M110 300 C110 244 165 210 250 202 L470 202 C555 210 610 244 610 300 L610 332 C610 348 596 358 578 358 L142 358 C124 358 110 348 110 332 Z" fill="url(#bodyRed)"/>
+          <!-- capot + cabine -->
+          <path d="M250 205 C266 168 302 152 360 152 C418 152 454 168 470 205 Z" fill="url(#bodyRed)"/>
+          <!-- pare-brise -->
+          <path d="M288 202 C302 176 327 166 360 166 C393 166 418 176 432 202 Z" fill="url(#glass)"/>
+          <!-- arête capot -->
+          <path d="M360 168 L360 250" stroke="rgba(0,0,0,.35)" stroke-width="2"/>
+          <path d="M315 210 L330 250 M405 210 L390 250" stroke="rgba(0,0,0,.25)" stroke-width="2" fill="none"/>
+          <!-- liseré rouge haut (rim light) -->
+          <path d="M250 205 C266 168 302 152 360 152 C418 152 454 168 470 205" fill="none" stroke="#ff5666" stroke-width="2.5" opacity=".7"/>
+          <!-- phares en lame -->
+          <path d="M468 224 L556 240 L551 262 L466 248 Z" fill="#eaf6ff" filter="url(#hl)"/>
+          <path d="M252 224 L164 240 L169 262 L254 248 Z" fill="#eaf6ff" filter="url(#hl)"/>
+          <path d="M470 230 L548 244 L545 256 L469 244 Z" fill="#ffffff"/>
+          <path d="M250 230 L172 244 L175 256 L251 244 Z" fill="#ffffff"/>
+          <!-- prises d'air basses -->
+          <path d="M150 318 L250 318 L238 350 L162 350 Z" fill="#0b0b0e"/>
+          <path d="M470 318 L570 318 L558 350 L482 350 Z" fill="#0b0b0e"/>
+          <!-- calandre centrale -->
+          <path d="M300 320 L420 320 L408 350 L312 350 Z" fill="#0e0e12"/>
+          <path d="M312 330 H408 M315 340 H405" stroke="rgba(255,255,255,.08)" stroke-width="2"/>
+          <!-- splitter -->
+          <rect x="150" y="350" width="420" height="6" rx="3" fill="#1a1a20"/>
+          <rect x="150" y="350" width="420" height="2.5" rx="2" fill="rgba(255,255,255,.18)"/>
+          <!-- emblème -->
+          <circle cx="360" cy="232" r="7" fill="#0b0b0e" stroke="#ff5666" stroke-width="1.5"/>
+          <!-- roues -->
+          <ellipse cx="170" cy="350" rx="40" ry="20" fill="#08080a"/>
+          <ellipse cx="550" cy="350" rx="40" ry="20" fill="#08080a"/>
+        </g>
+      </svg>
+
+      <!-- scrim pour lisibilité -->
+      <div class="absolute inset-0 bg-gradient-to-t from-noir via-noir/40 to-noir/30"></div>
+
+      <!-- overlay texte + recherche -->
+      <div class="absolute inset-0 flex flex-col items-center justify-end p-5 sm:p-8 text-center">
+        <p class="font-display font-bold text-xl sm:text-2xl uppercase tracking-wide text-white drop-shadow mb-3">Trouvez votre moniteur près de chez vous !</p>
+        <div class="w-full max-w-lg bg-white rounded-2xl p-1.5 flex items-center gap-2 shadow-2xl">
+          <svg viewBox="0 0 24 24" class="w-5 h-5 ml-3 text-noir/40 shrink-0" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+          <input type="text" placeholder="Ville, code postal…" class="flex-1 bg-transparent outline-none text-noir text-base placeholder:text-noir/40 min-w-0">
+          <button onclick="nav('resultats')" class="shrink-0 font-extrabold uppercase tracking-wide text-sm px-5 py-3 rounded-xl bg-red text-white hover:bg-red-bright transition">Recherche</button>
         </div>
-        <div class="absolute -right-3 -top-3 bg-amber text-ink font-display font-bold text-sm px-4 py-2 rounded-xl rotate-3 shadow-lg">dès 25 €/h</div>
       </div>
     </div>
 
-    <div class="road-line max-w-6xl mx-auto px-5 mb-2 opacity-70"></div>
+    <!-- Toggle façon Landscape/Portrait de la maquette wallpaper -->
+    <div class="rise mt-4 max-w-lg mx-auto bg-panel2 border border-white/10 rounded-2xl p-1 grid grid-cols-2 text-sm font-bold" style="animation-delay:.3s">
+      <button onclick="setBoite(this,0)" class="boite-btn py-3 rounded-xl bg-red text-white flex items-center justify-center gap-2 transition">
+        <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 5v4M12 15v4M5 12h4M15 12h4"/></svg> Boîte manuelle
+      </button>
+      <button onclick="setBoite(this,1)" class="boite-btn py-3 rounded-xl text-white/60 flex items-center justify-center gap-2 transition">
+        <span class="font-display font-extrabold text-base">A</span> Boîte automatique
+      </button>
+    </div>
   </div>
 
   <!-- COMMENT CA MARCHE -->
-  <div class="max-w-6xl mx-auto px-5 py-16">
-    <h2 class="font-display font-bold text-3xl md:text-4xl text-center">Trois étapes, c'est plié</h2>
-    <div class="grid md:grid-cols-3 gap-5 mt-10">
-      <div class="bg-white rounded-2xl p-6 border border-ink/5 hover:-translate-y-1 transition">
-        <div class="font-display font-extrabold text-amber-dark text-2xl">01</div>
-        <h3 class="font-bold text-lg mt-2">Cherchez</h3>
-        <p class="text-ink/55 text-sm mt-1">Filtrez par ville, type de boîte et prix. Comparez les avis.</p>
+  <div class="max-w-6xl mx-auto px-5 pb-16">
+    <h2 class="font-display font-extrabold uppercase text-3xl md:text-4xl text-center tracking-tight">Trois étapes, c'est plié</h2>
+    <div class="grid md:grid-cols-3 gap-4 mt-8">
+      <div class="bg-panel border border-white/10 rounded-2xl p-6 hover:border-red/50 transition">
+        <div class="font-display font-extrabold text-red text-3xl">01</div>
+        <h3 class="font-extrabold text-lg mt-1">Cherchez</h3>
+        <p class="text-white/50 text-sm mt-1">Filtrez par ville, type de boîte et prix. Comparez les avis.</p>
       </div>
-      <div class="bg-white rounded-2xl p-6 border border-ink/5 hover:-translate-y-1 transition">
-        <div class="font-display font-extrabold text-amber-dark text-2xl">02</div>
-        <h3 class="font-bold text-lg mt-2">Réservez</h3>
-        <p class="text-ink/55 text-sm mt-1">Choisissez un créneau vert sur le planning du moniteur.</p>
+      <div class="bg-panel border border-white/10 rounded-2xl p-6 hover:border-red/50 transition">
+        <div class="font-display font-extrabold text-red text-3xl">02</div>
+        <h3 class="font-extrabold text-lg mt-1">Réservez</h3>
+        <p class="text-white/50 text-sm mt-1">Choisissez un créneau vert sur le planning du moniteur.</p>
       </div>
-      <div class="bg-white rounded-2xl p-6 border border-ink/5 hover:-translate-y-1 transition">
-        <div class="font-display font-extrabold text-amber-dark text-2xl">03</div>
-        <h3 class="font-bold text-lg mt-2">Conduisez</h3>
-        <p class="text-ink/55 text-sm mt-1">Rappel automatique avant le RDV. Annulation possible.</p>
+      <div class="bg-panel border border-white/10 rounded-2xl p-6 hover:border-red/50 transition">
+        <div class="font-display font-extrabold text-red text-3xl">03</div>
+        <h3 class="font-extrabold text-lg mt-1">Conduisez</h3>
+        <p class="text-white/50 text-sm mt-1">Rappel automatique avant le RDV. Annulation possible.</p>
       </div>
     </div>
 
-    <!-- Bandeau moniteur -->
-    <div class="grain relative overflow-hidden mt-14 bg-ink rounded-[1.75rem] p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
-      <div>
-        <h3 class="font-display font-bold text-2xl md:text-3xl text-cream">Vous êtes moniteur ?</h3>
-        <p class="text-cream/55 mt-2 max-w-md">Remplissez votre planning, fixez vos tarifs et gérez vos réservations en un seul endroit.</p>
+    <div class="relative overflow-hidden mt-10 bg-panel border border-white/10 rounded-3xl p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
+      <svg viewBox="0 0 240 110" class="car-watermark right-0 bottom-0 w-72" style="opacity:.08"><path d="M15 78 q4 -2 12 -3 l10 -22 q5 -10 20 -11 l60 0 q14 1 22 11 l16 24 q18 1 28 6 q10 5 10 11 l-188 0 q-12 0 -12 -10 z M55 86 a14 14 0 1 0 0.1 0 M180 86 a14 14 0 1 0 0.1 0" fill="none" stroke="#fff" stroke-width="3"/></svg>
+      <div class="relative">
+        <h3 class="font-display font-extrabold uppercase text-2xl md:text-3xl">Vous êtes moniteur ?</h3>
+        <p class="text-white/55 mt-2 max-w-md">Remplissez votre planning, fixez vos tarifs et gérez vos réservations en un seul endroit.</p>
       </div>
-      <button onclick="nav('formules')" class="shrink-0 font-bold px-6 py-3.5 rounded-full bg-amber text-ink hover:bg-amber-light transition shadow-[0_4px_0_#D99A00] active:translate-y-0.5">Donner des cours →</button>
+      <button onclick="nav('formules')" class="relative shrink-0 font-extrabold uppercase tracking-wide px-6 py-3.5 rounded-full bg-red text-white hover:bg-red-bright transition shadow-[0_0_30px_-8px_rgba(225,29,43,.9)] active:scale-95">Donner des cours →</button>
     </div>
   </div>
 </section>
 
 <!-- ====================== ECRAN 2 : RESULTATS ====================== -->
 <section id="resultats" class="screen">
-  <div class="max-w-6xl mx-auto px-5 py-8 md:py-10">
-    <button onclick="nav('home')" class="text-sm font-semibold text-ink/50 hover:text-ink flex items-center gap-1 mb-4">
+  <div class="relative max-w-6xl mx-auto px-5 py-8 md:py-10">
+    <svg viewBox="0 0 240 110" class="car-watermark -right-6 top-0 w-64"><path d="M15 78 q4 -2 12 -3 l10 -22 q5 -10 20 -11 l60 0 q14 1 22 11 l16 24 q18 1 28 6 q10 5 10 11 l-188 0 q-12 0 -12 -10 z M55 86 a14 14 0 1 0 0.1 0 M180 86 a14 14 0 1 0 0.1 0" fill="none" stroke="#E11D2B" stroke-width="3"/></svg>
+    <button onclick="nav('home')" class="text-sm font-bold text-white/50 hover:text-white flex items-center gap-1 mb-4">
       <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg> Accueil
     </button>
-    <h1 class="font-display font-extrabold text-3xl md:text-4xl tracking-tight">Moniteurs à <span class="text-amber-dark">Paris</span></h1>
-    <p class="text-ink/50 mt-1">14 moniteurs disponibles près de vous</p>
+    <h1 class="font-display font-extrabold uppercase text-4xl md:text-5xl tracking-tight">Moniteurs à <span class="text-red">Paris</span></h1>
+    <p class="text-white/50 mt-1">14 moniteurs disponibles près de vous</p>
 
-    <!-- Filtres -->
     <div class="flex flex-wrap items-center gap-2 mt-6">
-      <button onclick="toggleChip(this)" class="chip text-sm font-semibold px-3.5 py-2 rounded-full bg-white border border-ink/10">Boîte manuelle</button>
-      <button onclick="toggleChip(this)" class="chip text-sm font-semibold px-3.5 py-2 rounded-full bg-white border border-ink/10">Boîte auto</button>
-      <button onclick="toggleChip(this)" class="chip text-sm font-semibold px-3.5 py-2 rounded-full bg-white border border-ink/10">≤ 30 €/h</button>
-      <button onclick="toggleChip(this)" class="chip text-sm font-semibold px-3.5 py-2 rounded-full bg-white border border-ink/10">★ 4,5+</button>
+      <button onclick="toggleChip(this)" class="chip text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10">Boîte manuelle</button>
+      <button onclick="toggleChip(this)" class="chip text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10">Boîte auto</button>
+      <button onclick="toggleChip(this)" class="chip text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10">≤ 30 €/h</button>
+      <button onclick="toggleChip(this)" class="chip text-sm font-bold px-4 py-2 rounded-full bg-panel2 border border-white/10">★ 4,5+</button>
     </div>
 
-    <!-- Liste des cartes -->
     <div id="resultsList" class="grid sm:grid-cols-2 gap-4 mt-7"></div>
   </div>
 </section>
 
 <!-- ====================== ECRAN 3 : FICHE MONITEUR + PLANNING ====================== -->
 <section id="profil" class="screen">
-  <div class="max-w-5xl mx-auto px-5 py-8 md:py-10">
-    <button onclick="nav('resultats')" class="text-sm font-semibold text-ink/50 hover:text-ink flex items-center gap-1 mb-5">
+  <div class="relative max-w-5xl mx-auto px-5 py-8 md:py-10">
+    <svg viewBox="0 0 240 110" class="car-watermark right-0 -top-2 w-56"><path d="M15 78 q4 -2 12 -3 l10 -22 q5 -10 20 -11 l60 0 q14 1 22 11 l16 24 q18 1 28 6 q10 5 10 11 l-188 0 q-12 0 -12 -10 z M55 86 a14 14 0 1 0 0.1 0 M180 86 a14 14 0 1 0 0.1 0" fill="none" stroke="#E11D2B" stroke-width="3"/></svg>
+    <button onclick="nav('resultats')" class="text-sm font-bold text-white/50 hover:text-white flex items-center gap-1 mb-5">
       <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg> Retour aux résultats
     </button>
 
-    <!-- En-tête profil -->
-    <div class="bg-white rounded-3xl border border-ink/5 p-6 md:p-8 flex flex-col sm:flex-row gap-6">
+    <div class="bg-panel border border-white/10 rounded-3xl p-6 md:p-8 flex flex-col sm:flex-row gap-6">
       <div class="shrink-0">
-        <div class="w-24 h-24 rounded-2xl bg-amber/20 grid place-items-center text-amber-dark font-display font-extrabold text-4xl">K</div>
+        <div class="w-24 h-24 rounded-2xl bg-red/15 border border-red/30 grid place-items-center text-red font-display font-extrabold text-5xl">K</div>
       </div>
       <div class="flex-1">
         <div class="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h1 class="font-display font-extrabold text-3xl tracking-tight">Karim B.</h1>
-            <p class="text-ink/55 flex items-center gap-1.5 mt-1">
+            <h1 class="font-display font-extrabold uppercase text-3xl tracking-tight">Karim B.</h1>
+            <p class="text-white/55 flex items-center gap-1.5 mt-1 text-sm">
               <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.5"/></svg>
-              Paris 11ᵉ · se déplace dans un rayon de 8 km
+              Paris 11ᵉ · rayon de 8 km
             </p>
           </div>
-          <span class="font-display font-extrabold text-2xl">28 €<span class="text-base font-semibold text-ink/40">/h</span></span>
+          <span class="font-display font-extrabold text-3xl text-red">28 €<span class="text-base font-bold text-white/40">/h</span></span>
         </div>
         <div class="flex flex-wrap gap-2 mt-4">
-          <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-ink text-amber">⚙️ Boîte manuelle</span>
-          <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-amber/15 text-amber-dark">★ 4,9 · 87 avis</span>
-          <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-dispo/10 text-dispo">● 3 créneaux aujourd'hui</span>
+          <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-white text-noir">⚙️ Boîte manuelle</span>
+          <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-red/15 text-red border border-red/30">★ 4,9 · 87 avis</span>
+          <span class="text-xs font-bold px-3 py-1.5 rounded-full bg-dispo/15 text-dispo border border-dispo/30">● 3 créneaux aujourd'hui</span>
         </div>
-        <p class="text-ink/60 mt-4 text-sm leading-relaxed">Moniteur diplômé depuis 9 ans, patient et pédagogue. Spécialiste de l'examen en candidat libre. Véhicule double commande.</p>
+        <p class="text-white/60 mt-4 text-sm leading-relaxed">Moniteur diplômé depuis 9 ans, patient et pédagogue. Spécialiste de l'examen en candidat libre. Véhicule double commande.</p>
       </div>
     </div>
 
     <!-- PLANNING -->
-    <div class="mt-7 bg-white rounded-3xl border border-ink/5 p-5 md:p-7">
+    <div class="mt-6 bg-panel border border-white/10 rounded-3xl p-5 md:p-7">
       <div class="flex flex-wrap items-center justify-between gap-3">
-        <h2 class="font-display font-bold text-2xl">Planning &amp; réservation</h2>
-        <div class="flex items-center gap-4 text-xs font-semibold">
+        <h2 class="font-display font-extrabold uppercase text-2xl tracking-tight">Planning &amp; réservation</h2>
+        <div class="flex items-center gap-4 text-xs font-bold">
           <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-dispo"></span> Dispo</span>
           <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-reserve"></span> Réservé</span>
           <span class="flex items-center gap-1.5"><span class="w-3 h-3 rounded bg-indispo"></span> Indispo</span>
         </div>
       </div>
+      <p class="text-white/40 text-sm mt-2 mb-4">Cliquez sur un créneau <span class="text-dispo font-bold">vert</span> pour le réserver.</p>
 
-      <p class="text-ink/45 text-sm mt-2 mb-4">Cliquez sur un créneau <span class="text-dispo font-semibold">vert</span> pour le réserver.</p>
-
-      <!-- Grille calendrier (scroll horizontal sur mobile) -->
       <div class="overflow-x-auto -mx-1 px-1">
         <div id="calendar" class="min-w-[640px]"></div>
       </div>
 
-      <button onclick="nav('connexion')" class="mt-6 w-full font-bold px-6 py-4 rounded-2xl bg-ink text-amber hover:bg-ink-soft transition flex items-center justify-center gap-2">
+      <button onclick="nav('connexion')" class="mt-6 w-full font-extrabold uppercase tracking-wide px-6 py-4 rounded-2xl bg-red text-white hover:bg-red-bright transition flex items-center justify-center gap-2 shadow-[0_0_30px_-8px_rgba(225,29,43,.9)]">
         <svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         Contacter Karim
       </button>
@@ -274,90 +310,87 @@
 
 <!-- ====================== ECRAN 4 : CONNEXION ====================== -->
 <section id="connexion" class="screen">
-  <div class="max-w-md mx-auto px-5 py-12 md:py-16 text-center">
-    <button onclick="back()" class="absolute left-5 text-ink/40 hover:text-ink">
+  <div class="relative max-w-md mx-auto px-5 py-12 md:py-16 text-center">
+    <button onclick="back()" class="absolute left-5 top-12 text-white/40 hover:text-white">
       <svg viewBox="0 0 24 24" class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
     </button>
-    <div class="grid place-items-center w-16 h-16 rounded-2xl bg-ink text-amber mx-auto rotate-3">
-      <span class="font-display font-extrabold text-3xl">C</span>
+    <div class="grid place-items-center w-16 h-16 rounded-2xl bg-red text-white mx-auto shadow-[0_0_30px_-6px_rgba(225,29,43,.9)]">
+      <span class="font-display font-extrabold text-4xl">C</span>
     </div>
-    <h1 class="font-display font-extrabold text-4xl tracking-tight mt-6">Connectez-vous</h1>
-    <p class="text-ink/50 mt-2">Pour réserver votre créneau avec un moniteur.</p>
+    <h1 class="font-display font-extrabold uppercase text-4xl tracking-tight mt-6">Connectez-vous</h1>
+    <p class="text-white/50 mt-2">Pour réserver votre créneau avec un moniteur.</p>
 
     <div class="mt-8 space-y-3 text-left">
-      <input type="email" placeholder="Adresse email" class="w-full bg-white border border-ink/10 rounded-2xl px-5 py-4 outline-none focus:border-amber transition placeholder:text-ink/35">
-      <button class="w-full font-bold px-5 py-4 rounded-2xl bg-amber text-ink hover:bg-amber-light transition shadow-[0_4px_0_#D99A00] active:translate-y-0.5">Connexion</button>
+      <input type="email" placeholder="Adresse email" class="w-full bg-panel2 border border-white/10 rounded-2xl px-5 py-4 outline-none text-white focus:border-red transition placeholder:text-white/35">
+      <button class="w-full font-extrabold uppercase tracking-wide px-5 py-4 rounded-2xl bg-red text-white hover:bg-red-bright transition shadow-[0_0_30px_-8px_rgba(225,29,43,.9)] active:scale-[.98]">Connexion</button>
 
-      <div class="flex items-center gap-3 py-2 text-ink/35 text-sm font-semibold">
-        <span class="flex-1 h-px bg-ink/10"></span> ou <span class="flex-1 h-px bg-ink/10"></span>
+      <div class="flex items-center gap-3 py-2 text-white/35 text-sm font-bold">
+        <span class="flex-1 h-px bg-white/10"></span> ou <span class="flex-1 h-px bg-white/10"></span>
       </div>
 
-      <button class="w-full font-semibold px-5 py-4 rounded-2xl bg-white border border-ink/10 hover:border-ink/25 transition flex items-center justify-center gap-3">
+      <button class="w-full font-bold px-5 py-4 rounded-2xl bg-white text-noir hover:bg-white/90 transition flex items-center justify-center gap-3">
         <svg viewBox="0 0 24 24" class="w-5 h-5"><path fill="#4285F4" d="M22.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h5.9a5 5 0 0 1-2.2 3.3v2.7h3.6c2.1-1.9 3.2-4.7 3.2-8.2z"/><path fill="#34A853" d="M12 23c2.9 0 5.4-1 7.2-2.6l-3.6-2.7c-1 .7-2.3 1.1-3.6 1.1-2.8 0-5.1-1.9-6-4.4H2.3v2.8A11 11 0 0 0 12 23z"/><path fill="#FBBC05" d="M6 14.4a6.6 6.6 0 0 1 0-4.2V7.4H2.3a11 11 0 0 0 0 9.8z"/><path fill="#EA4335" d="M12 5.4c1.6 0 3 .5 4.1 1.6l3.1-3.1A11 11 0 0 0 2.3 7.4L6 10.2C6.9 7.7 9.2 5.4 12 5.4z"/></svg>
         Connexion avec Google
       </button>
-      <button class="w-full font-semibold px-5 py-4 rounded-2xl bg-white border border-ink/10 hover:border-ink/25 transition flex items-center justify-center gap-3">
+      <button class="w-full font-bold px-5 py-4 rounded-2xl bg-white text-noir hover:bg-white/90 transition flex items-center justify-center gap-3">
         <svg viewBox="0 0 24 24" class="w-5 h-5" fill="currentColor"><path d="M16 1.8c.1 1-.3 2.1-1 2.9-.7.9-1.8 1.5-2.9 1.4-.1-1 .4-2.1 1-2.8C13.9 2.4 15 1.9 16 1.8zm3.4 16.4c-.5 1.2-.8 1.7-1.5 2.8-1 1.5-2.3 3.3-4 3.3-1.5 0-1.9-1-3.9-1s-2.5 1-3.9 1c-1.7 0-3-1.7-4-3.1C-.6 16.4-1 11 .9 8.2 1.9 6.8 3.8 5.9 5.6 5.9c1.7 0 2.8 1 4.2 1 1.4 0 2.2-1 4.2-1 1.5 0 3.2.8 4.3 2.3-3.8 2-3.2 7.4 1.1 9z"/></svg>
         Connexion avec Apple
       </button>
     </div>
 
-    <p class="text-ink/40 mt-8 text-sm">Vous n'avez pas encore de compte ?<br><button class="font-bold text-ink underline decoration-amber decoration-2 underline-offset-2">Inscrivez-vous</button></p>
+    <p class="text-white/40 mt-8 text-sm">Vous n'avez pas encore de compte ?<br><button class="font-extrabold text-white underline decoration-red decoration-2 underline-offset-4">Inscrivez-vous</button></p>
   </div>
 </section>
 
 <!-- ====================== ECRAN 5 : FORMULES ====================== -->
 <section id="formules" class="screen">
   <div class="max-w-5xl mx-auto px-5 py-10 md:py-14">
-    <button onclick="nav('home')" class="text-sm font-semibold text-ink/50 hover:text-ink flex items-center gap-1 mb-5">
+    <button onclick="nav('home')" class="text-sm font-bold text-white/50 hover:text-white flex items-center gap-1 mb-5">
       <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg> Accueil
     </button>
     <div class="text-center">
-      <h1 class="font-display font-extrabold text-4xl md:text-5xl tracking-tight">Choisissez votre formule</h1>
-      <p class="text-ink/55 mt-3 max-w-lg mx-auto">Payez à l'heure ou en forfait. Sans engagement, annulation jusqu'à 24 h avant.</p>
+      <h1 class="font-display font-extrabold uppercase text-4xl md:text-5xl tracking-tight">Choisissez votre formule</h1>
+      <p class="text-white/55 mt-3 max-w-lg mx-auto">Payez à l'heure ou en forfait. Sans engagement, annulation jusqu'à 24 h avant.</p>
     </div>
 
-    <div class="grid md:grid-cols-3 gap-5 mt-10 items-stretch">
-      <!-- Découverte -->
-      <div class="bg-white rounded-3xl border border-ink/5 p-7 flex flex-col">
-        <span class="text-xs font-bold uppercase tracking-widest text-ink/40">Découverte</span>
-        <div class="font-display font-extrabold text-4xl mt-3">10 €</div>
-        <p class="text-ink/50 text-sm mt-1">1 heure de cours pour tester</p>
-        <ul class="text-sm text-ink/65 space-y-2.5 mt-5 flex-1">
+    <div class="grid md:grid-cols-3 gap-4 mt-10 items-stretch">
+      <div class="bg-panel border border-white/10 rounded-3xl p-7 flex flex-col">
+        <span class="text-xs font-bold uppercase tracking-widest text-white/40">Découverte</span>
+        <div class="font-display font-extrabold text-5xl mt-2">10 €</div>
+        <p class="text-white/50 text-sm mt-1">1 heure de cours pour tester</p>
+        <ul class="text-sm text-white/70 space-y-2.5 mt-5 flex-1">
           <li class="flex gap-2"><span class="text-dispo">✓</span> 1 leçon de 60 min</li>
           <li class="flex gap-2"><span class="text-dispo">✓</span> Bilan de niveau</li>
           <li class="flex gap-2"><span class="text-dispo">✓</span> Sans engagement</li>
         </ul>
-        <button onclick="nav('connexion')" class="mt-6 w-full font-bold px-5 py-3.5 rounded-2xl border-2 border-ink/15 hover:border-ink transition">Choisir</button>
+        <button onclick="nav('connexion')" class="mt-6 w-full font-extrabold uppercase tracking-wide px-5 py-3.5 rounded-2xl border-2 border-white/15 hover:border-white transition">Choisir</button>
       </div>
 
-      <!-- Forfait 10h (populaire) -->
-      <div class="grain relative overflow-hidden bg-ink rounded-3xl p-7 flex flex-col scale-[1.03] shadow-2xl">
-        <span class="absolute right-5 top-5 text-[10px] font-bold uppercase tracking-widest bg-amber text-ink px-2.5 py-1 rounded-full">Populaire</span>
-        <span class="text-xs font-bold uppercase tracking-widest text-amber">Forfait 10 h</span>
-        <div class="font-display font-extrabold text-4xl mt-3 text-cream">300 €</div>
-        <p class="text-cream/50 text-sm mt-1">30 €/h — le bon rythme</p>
-        <ul class="text-sm text-cream/75 space-y-2.5 mt-5 flex-1">
-          <li class="flex gap-2"><span class="text-amber">✓</span> 10 leçons de 60 min</li>
-          <li class="flex gap-2"><span class="text-amber">✓</span> Planning prioritaire</li>
-          <li class="flex gap-2"><span class="text-amber">✓</span> Rappels par message</li>
-          <li class="flex gap-2"><span class="text-amber">✓</span> Suivi de progression</li>
+      <div class="relative overflow-hidden bg-gradient-to-b from-red to-red-dark rounded-3xl p-7 flex flex-col md:scale-[1.04] shadow-[0_0_50px_-12px_rgba(225,29,43,.8)]">
+        <span class="absolute right-5 top-5 text-[10px] font-extrabold uppercase tracking-widest bg-white text-red px-2.5 py-1 rounded-full">Populaire</span>
+        <span class="text-xs font-bold uppercase tracking-widest text-white/80">Forfait 10 h</span>
+        <div class="font-display font-extrabold text-5xl mt-2 text-white">300 €</div>
+        <p class="text-white/80 text-sm mt-1">30 €/h — le bon rythme</p>
+        <ul class="text-sm text-white/90 space-y-2.5 mt-5 flex-1">
+          <li class="flex gap-2"><span>✓</span> 10 leçons de 60 min</li>
+          <li class="flex gap-2"><span>✓</span> Planning prioritaire</li>
+          <li class="flex gap-2"><span>✓</span> Rappels par message</li>
+          <li class="flex gap-2"><span>✓</span> Suivi de progression</li>
         </ul>
-        <button onclick="nav('connexion')" class="mt-6 w-full font-bold px-5 py-3.5 rounded-2xl bg-amber text-ink hover:bg-amber-light transition shadow-[0_4px_0_#D99A00] active:translate-y-0.5">Choisir</button>
+        <button onclick="nav('connexion')" class="mt-6 w-full font-extrabold uppercase tracking-wide px-5 py-3.5 rounded-2xl bg-white text-red hover:bg-white/90 transition active:scale-[.98]">Choisir</button>
       </div>
 
-      <!-- Forfait 20h -->
-      <div class="bg-white rounded-3xl border border-ink/5 p-7 flex flex-col">
-        <span class="text-xs font-bold uppercase tracking-widest text-ink/40">Forfait 20 h</span>
-        <div class="font-display font-extrabold text-4xl mt-3">560 €</div>
-        <p class="text-ink/50 text-sm mt-1">28 €/h — le plus complet</p>
-        <ul class="text-sm text-ink/65 space-y-2.5 mt-5 flex-1">
+      <div class="bg-panel border border-white/10 rounded-3xl p-7 flex flex-col">
+        <span class="text-xs font-bold uppercase tracking-widest text-white/40">Forfait 20 h</span>
+        <div class="font-display font-extrabold text-5xl mt-2">560 €</div>
+        <p class="text-white/50 text-sm mt-1">28 €/h — le plus complet</p>
+        <ul class="text-sm text-white/70 space-y-2.5 mt-5 flex-1">
           <li class="flex gap-2"><span class="text-dispo">✓</span> 20 leçons de 60 min</li>
           <li class="flex gap-2"><span class="text-dispo">✓</span> Planning prioritaire</li>
           <li class="flex gap-2"><span class="text-dispo">✓</span> Préparation examen</li>
           <li class="flex gap-2"><span class="text-dispo">✓</span> Annulation flexible</li>
         </ul>
-        <button onclick="nav('connexion')" class="mt-6 w-full font-bold px-5 py-3.5 rounded-2xl border-2 border-ink/15 hover:border-ink transition">Choisir</button>
+        <button onclick="nav('connexion')" class="mt-6 w-full font-extrabold uppercase tracking-wide px-5 py-3.5 rounded-2xl border-2 border-white/15 hover:border-white transition">Choisir</button>
       </div>
     </div>
   </div>
@@ -366,108 +399,103 @@
 </main>
 
 <!-- ====================== FOOTER ====================== -->
-<footer class="mt-10 border-t border-ink/10">
-  <div class="road-line max-w-6xl mx-auto"></div>
-  <div class="max-w-6xl mx-auto px-5 py-10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-ink/50">
-    <div class="flex items-center gap-2 font-display font-extrabold text-lg text-ink">
-      Candi<span class="text-amber-dark">Car</span>
-    </div>
+<footer class="relative mt-10 border-t border-white/10 overflow-hidden">
+  <svg viewBox="0 0 240 110" class="car-watermark left-1/2 -translate-x-1/2 bottom-0 w-80" style="opacity:.05"><path d="M15 78 q4 -2 12 -3 l10 -22 q5 -10 20 -11 l60 0 q14 1 22 11 l16 24 q18 1 28 6 q10 5 10 11 l-188 0 q-12 0 -12 -10 z M55 86 a14 14 0 1 0 0.1 0 M180 86 a14 14 0 1 0 0.1 0" fill="none" stroke="#fff" stroke-width="3"/></svg>
+  <div class="relative max-w-6xl mx-auto px-5 py-10 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-white/50">
+    <div class="font-display font-extrabold uppercase text-xl text-white">Candi<span class="text-red">Car</span></div>
     <p>Moniteurs ↔ candidats libres · Maquette de démonstration</p>
-    <div class="flex gap-4 font-semibold">
-      <button class="hover:text-ink">Aide</button>
-      <button class="hover:text-ink">Mentions légales</button>
-      <button class="hover:text-ink">Contact</button>
+    <div class="flex gap-4 font-bold">
+      <button class="hover:text-white">Aide</button>
+      <button class="hover:text-white">Mentions légales</button>
+      <button class="hover:text-white">Contact</button>
     </div>
   </div>
 </footer>
 
-<!-- TOAST -->
-<div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-ink text-cream px-5 py-3.5 rounded-2xl shadow-2xl text-sm font-semibold flex items-center gap-3"></div>
+<div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-white text-noir px-5 py-3.5 rounded-2xl shadow-2xl text-sm font-bold flex items-center gap-3"></div>
 
 <script>
-  /* ---------- Navigation entre écrans ---------- */
   let history = ['home'];
   function nav(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-    const el = document.getElementById(id);
-    el.classList.add('active');
+    document.getElementById(id).classList.add('active');
     if (history[history.length-1] !== id) history.push(id);
     document.querySelectorAll('[data-nav]').forEach(b => b.classList.toggle('active-nav', b.dataset.nav === id));
     document.getElementById('mobileMenu').classList.add('hidden');
-    window.scrollTo({ top: 0, behavior: 'instant' });
+    window.scrollTo({ top: 0 });
   }
-  function back() {
-    history.pop();
-    nav(history.pop() || 'home');
-  }
+  function back() { history.pop(); nav(history.pop() || 'home'); }
   function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('hidden'); }
   function toggleChip(el) {
-    el.classList.toggle('bg-ink'); el.classList.toggle('text-amber');
-    el.classList.toggle('border-ink'); el.classList.toggle('bg-white');
+    el.classList.toggle('bg-red'); el.classList.toggle('text-white');
+    el.classList.toggle('border-red'); el.classList.toggle('bg-panel2');
   }
-
+  function setBoite(el, i) {
+    document.querySelectorAll('.boite-btn').forEach((b,bi) => {
+      const on = bi === i;
+      b.classList.toggle('bg-red', on); b.classList.toggle('text-white', on);
+      b.classList.toggle('text-white/60', !on);
+    });
+  }
   function toast(msg) {
     const t = document.getElementById('toast');
-    t.innerHTML = '<svg viewBox="0 0 24 24" class="w-5 h-5 text-amber" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>' + msg;
+    t.innerHTML = '<svg viewBox="0 0 24 24" class="w-5 h-5 text-red" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6 9 17l-5-5"/></svg>' + msg;
     t.classList.remove('hidden'); t.classList.add('toast');
     clearTimeout(window._tt);
     window._tt = setTimeout(() => { t.classList.add('hidden'); t.classList.remove('toast'); }, 3200);
   }
 
-  /* ---------- Données moniteurs (démo) ---------- */
   const moniteurs = [
     { i:'K', n:'Karim B.', v:'Paris 11ᵉ', boite:'Manuelle', prix:28, note:4.9, avis:87, dispo:3 },
     { i:'L', n:'Laura M.', v:'Paris 15ᵉ', boite:'Auto', prix:32, note:4.8, avis:54, dispo:1 },
     { i:'S', n:'Sofiane R.', v:'Montreuil', boite:'Manuelle', prix:25, note:4.7, avis:120, dispo:5 },
     { i:'A', n:'Aïcha D.', v:'Paris 20ᵉ', boite:'Auto', prix:30, note:5.0, avis:33, dispo:2 },
   ];
-
   function renderResults() {
-    const list = document.getElementById('resultsList');
-    list.innerHTML = moniteurs.map(m => `
-      <button onclick="nav('profil')" class="text-left bg-white rounded-2xl border border-ink/5 p-5 hover:-translate-y-1 hover:shadow-[0_16px_30px_-18px_rgba(22,19,15,.4)] transition flex gap-4">
-        <div class="shrink-0 w-16 h-16 rounded-2xl bg-amber/20 grid place-items-center text-amber-dark font-display font-extrabold text-2xl">${m.i}</div>
+    document.getElementById('resultsList').innerHTML = moniteurs.map(m => `
+      <button onclick="nav('profil')" class="text-left bg-panel border border-white/10 rounded-2xl p-5 hover:border-red/50 hover:-translate-y-1 transition flex gap-4">
+        <div class="shrink-0 w-16 h-16 rounded-2xl bg-red/15 border border-red/30 grid place-items-center text-red font-display font-extrabold text-3xl">${m.i}</div>
         <div class="flex-1 min-w-0">
           <div class="flex items-start justify-between gap-2">
             <div>
-              <h3 class="font-display font-bold text-lg leading-tight">${m.n}</h3>
-              <p class="text-ink/50 text-sm flex items-center gap-1">
+              <h3 class="font-display font-extrabold uppercase text-lg leading-tight tracking-tight">${m.n}</h3>
+              <p class="text-white/50 text-sm flex items-center gap-1">
                 <svg viewBox="0 0 24 24" class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0z"/><circle cx="12" cy="10" r="2.5"/></svg>${m.v}
               </p>
             </div>
-            <span class="font-display font-extrabold text-lg shrink-0">${m.prix}€<span class="text-xs font-semibold text-ink/40">/h</span></span>
+            <span class="font-display font-extrabold text-xl text-red shrink-0">${m.prix}€<span class="text-xs font-bold text-white/40">/h</span></span>
           </div>
           <div class="flex flex-wrap items-center gap-1.5 mt-3">
-            <span class="text-[11px] font-bold px-2.5 py-1 rounded-full ${m.boite==='Manuelle'?'bg-ink text-amber':'bg-amber/15 text-amber-dark'}">${m.boite==='Manuelle'?'⚙️':'🅰️'} ${m.boite}</span>
-            <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-amber/15 text-amber-dark">★ ${m.note.toString().replace('.',',')} · ${m.avis}</span>
-            <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-dispo/10 text-dispo">● ${m.dispo} dispo</span>
+            <span class="text-[11px] font-bold px-2.5 py-1 rounded-full ${m.boite==='Manuelle'?'bg-white text-noir':'bg-red/15 text-red border border-red/30'}">${m.boite==='Manuelle'?'⚙️':'🅰️'} ${m.boite}</span>
+            <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-red/10 text-red">★ ${m.note.toString().replace('.',',')} · ${m.avis}</span>
+            <span class="text-[11px] font-bold px-2.5 py-1 rounded-full bg-dispo/15 text-dispo">● ${m.dispo} dispo</span>
           </div>
         </div>
       </button>`).join('');
   }
 
-  /* ---------- Calendrier / planning ---------- */
   const jours = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
   const heures = ['8h','9h','10h','11h','12h','14h','15h','16h','17h','18h','19h'];
-  // statut prédéfini pour la démo : 0 indispo, 1 dispo, 2 réservé
   function seedStatus(j,h){
-    if (j===6) return 0;                 // dimanche fermé
-    if (h===4) return 0;                 // pause déj 12h
+    if (j===6) return 0;
+    if (h===4) return 0;
     const r = (j*7 + h*3) % 5;
-    if (r===0) return 2;                 // réservé
-    if (r===1 || r===4) return 0;        // indispo
-    return 1;                            // dispo
+    if (r===0) return 2;
+    if (r===1 || r===4) return 0;
+    return 1;
   }
-  const palette = {0:'bg-indispo/40 text-ink/30 cursor-not-allowed',1:'bg-dispo/15 text-dispo hover:bg-dispo/25 cursor-pointer',2:'bg-reserve/15 text-reserve cursor-not-allowed line-through'};
+  const palette = {
+    0:'bg-indispo/30 text-white/30 cursor-not-allowed',
+    1:'bg-dispo/20 text-dispo border border-dispo/40 hover:bg-dispo/30 cursor-pointer',
+    2:'bg-reserve/20 text-reserve border border-reserve/40 cursor-not-allowed line-through'
+  };
   const labelStatus = {0:'—',1:'Libre',2:'Pris'};
-
   function renderCalendar() {
-    const cal = document.getElementById('calendar');
     let html = '<div class="grid" style="grid-template-columns:54px repeat(7,1fr);gap:6px">';
     html += '<div></div>';
-    jours.forEach(j => html += `<div class="text-center text-xs font-bold text-ink/50 pb-1">${j}</div>`);
+    jours.forEach(j => html += `<div class="text-center text-xs font-bold text-white/50 pb-1">${j}</div>`);
     heures.forEach((h,hi) => {
-      html += `<div class="text-xs font-semibold text-ink/40 flex items-center justify-end pr-1">${h}</div>`;
+      html += `<div class="text-xs font-bold text-white/40 flex items-center justify-end pr-1">${h}</div>`;
       jours.forEach((j,ji) => {
         const st = seedStatus(ji,hi);
         const onclick = st===1 ? `onclick="reserve(this,'${j}','${h}')"` : '';
@@ -475,12 +503,11 @@
       });
     });
     html += '</div>';
-    cal.innerHTML = html;
+    document.getElementById('calendar').innerHTML = html;
   }
   function reserve(el, j, h) {
     el.className = 'slot rounded-lg py-2 text-center text-[11px] font-bold ' + palette[2];
-    el.textContent = 'Pris';
-    el.removeAttribute('onclick');
+    el.textContent = 'Pris'; el.removeAttribute('onclick');
     toast(`Créneau ${j} ${h} sélectionné — connectez-vous pour confirmer`);
   }
 
