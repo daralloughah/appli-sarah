@@ -116,9 +116,17 @@
         <svg viewBox="0 0 24 24" class="w-6 h-6 text-white/40" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
         Donner des cours
       </button>
-      <button onclick="goNav('home')" class="w-full flex items-center gap-4 py-4 text-lg font-bold text-white/90 hover:text-red transition">
+      <button onclick="goNav('parrainage')" class="w-full flex items-center gap-4 py-4 text-lg font-bold text-white/90 hover:text-red transition">
+        <svg viewBox="0 0 24 24" class="w-6 h-6 text-white/40" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Parrainage <span class="ml-auto text-xs font-extrabold bg-blue text-white px-2 py-0.5 rounded-full">2 mois offerts</span>
+      </button>
+      <button onclick="goNav('apropos')" class="w-full flex items-center gap-4 py-4 text-lg font-bold text-white/90 hover:text-red transition">
+        <svg viewBox="0 0 24 24" class="w-6 h-6 text-white/40" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 16v-4M12 8h.01"/></svg>
+        À propos
+      </button>
+      <button onclick="goNav('aide')" class="w-full flex items-center gap-4 py-4 text-lg font-bold text-white/90 hover:text-red transition">
         <svg viewBox="0 0 24 24" class="w-6 h-6 text-white/40" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 3.5 2.3c-.6.3-1 .9-1 1.7M12 17h.01"/></svg>
-        Aide
+        Aide &amp; support
       </button>
     </div>
   </div>
@@ -396,6 +404,158 @@
   </div>
 </section>
 
+<!-- ====================== ECRAN 6 : AIDE & SUPPORT (élève / moniteur) ====================== -->
+<section id="aide" class="screen">
+  <div class="relative max-w-5xl mx-auto px-5 py-8 md:py-10">
+    <button onclick="nav('home')" class="text-sm font-bold text-white/50 hover:text-white flex items-center gap-1 mb-4">
+      <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg> Accueil
+    </button>
+
+    <h1 class="font-display font-extrabold uppercase text-4xl md:text-5xl tracking-tight text-center">Comment pouvons-nous <span class="text-red">vous aider</span> ?</h1>
+
+    <!-- recherche articles -->
+    <div class="mt-6 max-w-xl mx-auto bg-white rounded-2xl p-1.5 flex items-center gap-2 shadow-2xl">
+      <svg viewBox="0 0 24 24" class="w-5 h-5 ml-3 text-noir/40 shrink-0" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3-3"/></svg>
+      <input type="text" placeholder="Recherchez dans nos articles…" class="flex-1 bg-transparent outline-none text-noir text-base placeholder:text-noir/40 min-w-0 py-2.5">
+    </div>
+    <p class="text-center text-white/40 text-sm mt-3">Recherches populaires :
+      <button onclick="toast('Article (démo)')" class="text-red font-semibold hover:underline">réserver</button> ·
+      <button onclick="toast('Article (démo)')" class="text-red font-semibold hover:underline">annuler</button> ·
+      <button onclick="toast('Article (démo)')" class="text-red font-semibold hover:underline">paiement</button>
+    </p>
+
+    <!-- onglets élève / moniteur -->
+    <div class="mt-8 max-w-md mx-auto bg-panel2 border border-white/10 rounded-2xl p-1 grid grid-cols-2 text-sm font-bold">
+      <button id="aideTabEleve" onclick="setAideTab(0)" class="py-3 rounded-xl bg-red text-white transition">Je suis élève</button>
+      <button id="aideTabMoniteur" onclick="setAideTab(1)" class="py-3 rounded-xl text-white/60 transition">Je suis moniteur</button>
+    </div>
+
+    <!-- cartes thèmes (rendues en JS selon l'onglet) -->
+    <div id="aideCards" class="grid sm:grid-cols-2 gap-4 mt-7"></div>
+
+    <!-- FAQ accordéon -->
+    <h2 class="font-display font-extrabold uppercase text-2xl tracking-tight mt-12 mb-4">Questions fréquentes</h2>
+    <div id="faqList" class="space-y-3"></div>
+
+    <!-- SUPPORT : formulaire de demande -->
+    <div class="mt-12 relative overflow-hidden bg-panel border border-white/10 rounded-3xl p-6 md:p-8">
+      <svg viewBox="0 0 240 110" class="car-watermark right-0 bottom-0 w-56" style="opacity:.06"><path d="M15 78 q4 -2 12 -3 l10 -22 q5 -10 20 -11 l60 0 q14 1 22 11 l16 24 q18 1 28 6 q10 5 10 11 l-188 0 q-12 0 -12 -10 z M55 86 a14 14 0 1 0 0.1 0 M180 86 a14 14 0 1 0 0.1 0" fill="none" stroke="#fff" stroke-width="3"/></svg>
+      <div class="relative">
+        <h2 class="font-display font-extrabold uppercase text-2xl tracking-tight">Un problème ? Contactez le support</h2>
+        <p class="text-white/55 text-sm mt-1">On vous répond sous 24 h. Décrivez votre souci, on s'en occupe.</p>
+        <div class="grid sm:grid-cols-2 gap-3 mt-5">
+          <input type="text" placeholder="Votre nom" class="bg-panel2 border border-white/10 rounded-xl px-4 py-3.5 outline-none text-white focus:border-red transition placeholder:text-white/35">
+          <input type="email" placeholder="Votre email" class="bg-panel2 border border-white/10 rounded-xl px-4 py-3.5 outline-none text-white focus:border-red transition placeholder:text-white/35">
+        </div>
+        <select class="w-full mt-3 bg-panel2 border border-white/10 rounded-xl px-4 py-3.5 outline-none text-white/70 focus:border-red transition">
+          <option>Sujet : Réservation</option>
+          <option>Sujet : Paiement</option>
+          <option>Sujet : Mon compte</option>
+          <option>Sujet : Je suis moniteur</option>
+          <option>Sujet : Autre</option>
+        </select>
+        <textarea rows="4" placeholder="Décrivez votre demande…" class="w-full mt-3 bg-panel2 border border-white/10 rounded-xl px-4 py-3.5 outline-none text-white focus:border-red transition placeholder:text-white/35 resize-none"></textarea>
+        <button onclick="toast('Demande envoyée — réponse sous 24 h (démo)')" class="mt-3 w-full sm:w-auto font-extrabold uppercase tracking-wide px-6 py-3.5 rounded-2xl bg-red text-white hover:bg-red-bright transition shadow-[0_0_30px_-8px_rgba(225,29,43,.9)]">Envoyer ma demande</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== ECRAN 7 : PARRAINAGE ====================== -->
+<section id="parrainage" class="screen">
+  <div class="relative max-w-3xl mx-auto px-5 py-8 md:py-12">
+    <button onclick="nav('home')" class="text-sm font-bold text-white/50 hover:text-white flex items-center gap-1 mb-4">
+      <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg> Accueil
+    </button>
+
+    <div class="text-center">
+      <span class="inline-flex items-center gap-2 text-xs font-extrabold uppercase tracking-widest bg-blue/15 text-blue-light border border-blue/30 px-3 py-1.5 rounded-full">Parrainage CandiCar</span>
+      <h1 class="font-display font-extrabold uppercase text-4xl md:text-5xl tracking-tight mt-4">Parrainez vos potes,<br><span class="text-blue-light">gagnez 2 mois offerts</span></h1>
+      <p class="text-white/55 mt-3 max-w-lg mx-auto">Votre filleul s'inscrit avec votre code, prend sa 1ʳᵉ leçon, et vous gagnez chacun <span class="text-white font-bold">2 mois Premium offerts</span>.</p>
+    </div>
+
+    <!-- lien + code -->
+    <div class="mt-8 bg-panel border border-white/10 rounded-3xl p-6 space-y-4">
+      <div>
+        <label class="text-xs font-bold uppercase tracking-widest text-white/40">Votre lien d'affiliation</label>
+        <div class="mt-2 flex items-center gap-2 bg-panel2 border border-white/10 rounded-xl p-1.5">
+          <span id="refLink" class="flex-1 px-3 text-sm text-white/80 truncate">candicar.fr/r/AB12CD</span>
+          <button onclick="copier('candicar.fr/r/AB12CD')" class="shrink-0 font-bold text-sm px-4 py-2.5 rounded-lg bg-blue text-white hover:bg-blue-light transition">Copier</button>
+        </div>
+      </div>
+      <div>
+        <label class="text-xs font-bold uppercase tracking-widest text-white/40">Votre code promo</label>
+        <div class="mt-2 flex items-center gap-2 bg-panel2 border border-white/10 rounded-xl p-1.5">
+          <span class="flex-1 px-3 font-display font-extrabold text-xl tracking-widest text-blue-light">CANDI-AB12</span>
+          <button onclick="copier('CANDI-AB12')" class="shrink-0 font-bold text-sm px-4 py-2.5 rounded-lg bg-blue text-white hover:bg-blue-light transition">Copier</button>
+        </div>
+      </div>
+      <div class="flex gap-2 pt-1">
+        <button onclick="toast('Partage WhatsApp (démo)')" class="flex-1 font-bold text-sm py-3 rounded-xl bg-panel2 border border-white/10 hover:border-blue transition">Partager sur WhatsApp</button>
+        <button onclick="toast('Partage par SMS (démo)')" class="flex-1 font-bold text-sm py-3 rounded-xl bg-panel2 border border-white/10 hover:border-blue transition">Partager par SMS</button>
+      </div>
+    </div>
+
+    <!-- compteur -->
+    <div class="grid grid-cols-2 gap-4 mt-4">
+      <div class="bg-panel border border-white/10 rounded-2xl p-5 text-center">
+        <div class="font-display font-extrabold text-4xl text-blue-light">3</div>
+        <p class="text-white/50 text-sm mt-1">amis parrainés</p>
+      </div>
+      <div class="bg-panel border border-white/10 rounded-2xl p-5 text-center">
+        <div class="font-display font-extrabold text-4xl text-blue-light">6 mois</div>
+        <p class="text-white/50 text-sm mt-1">Premium gagnés</p>
+      </div>
+    </div>
+
+    <!-- comment ça marche -->
+    <div class="grid sm:grid-cols-3 gap-4 mt-8">
+      <div class="bg-panel border border-white/10 rounded-2xl p-5"><div class="font-display font-extrabold text-blue-light text-2xl">01</div><p class="text-sm text-white/70 mt-1 font-semibold">Partagez votre code</p></div>
+      <div class="bg-panel border border-white/10 rounded-2xl p-5"><div class="font-display font-extrabold text-blue-light text-2xl">02</div><p class="text-sm text-white/70 mt-1 font-semibold">Votre filleul réserve sa 1ʳᵉ leçon</p></div>
+      <div class="bg-panel border border-white/10 rounded-2xl p-5"><div class="font-display font-extrabold text-blue-light text-2xl">03</div><p class="text-sm text-white/70 mt-1 font-semibold">Vous gagnez 2 mois chacun</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ====================== ECRAN 8 : À PROPOS (storytelling) ====================== -->
+<section id="apropos" class="screen">
+  <div class="relative max-w-3xl mx-auto px-5 py-8 md:py-12">
+    <button onclick="nav('home')" class="text-sm font-bold text-white/50 hover:text-white flex items-center gap-1 mb-4">
+      <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m15 18-6-6 6-6"/></svg> Accueil
+    </button>
+
+    <!-- hero histoire -->
+    <div class="relative overflow-hidden rounded-[1.6rem] glow-red bg-noir p-8 md:p-12 text-center">
+      <svg viewBox="0 0 240 110" class="car-watermark left-1/2 -translate-x-1/2 bottom-0 w-96" style="opacity:.08"><path d="M15 78 q4 -2 12 -3 l10 -22 q5 -10 20 -11 l60 0 q14 1 22 11 l16 24 q18 1 28 6 q10 5 10 11 l-188 0 q-12 0 -12 -10 z M55 86 a14 14 0 1 0 0.1 0 M180 86 a14 14 0 1 0 0.1 0" fill="none" stroke="#E11D2B" stroke-width="3"/></svg>
+      <p class="relative text-red font-bold uppercase tracking-[.2em] text-xs">Notre histoire</p>
+      <h1 class="relative font-display font-extrabold uppercase text-4xl md:text-5xl tracking-tight mt-3">Pourquoi <span class="text-red">CandiCar</span> existe</h1>
+      <p class="relative text-white/60 mt-4 max-w-xl mx-auto leading-relaxed">Passer le permis en candidat libre, c'est galérer à trouver un moniteur dispo près de chez soi. CandiCar est né pour régler ça : mettre en relation, en quelques clics, les candidats libres et les moniteurs de leur quartier.</p>
+    </div>
+
+    <!-- sections storytelling (éditables plus tard via l'admin) -->
+    <div class="mt-6 space-y-4">
+      <div class="bg-panel border border-white/10 rounded-3xl p-6 md:p-8">
+        <h2 class="font-display font-extrabold uppercase text-2xl tracking-tight">Qui suis-je ?</h2>
+        <p class="text-white/65 mt-3 leading-relaxed text-[15px]">[ Espace à compléter ] — Racontez votre parcours, ce qui vous a poussée à créer CandiCar, votre lien avec le monde de la conduite et des candidats libres. Ce texte sera modifiable depuis le mode admin.</p>
+      </div>
+      <div class="bg-panel border border-white/10 rounded-3xl p-6 md:p-8">
+        <h2 class="font-display font-extrabold uppercase text-2xl tracking-tight">Notre mission</h2>
+        <p class="text-white/65 mt-3 leading-relaxed text-[15px]">Rendre le permis plus accessible et moins cher, en valorisant les moniteurs indépendants et en redonnant le choix aux élèves. Pas de grosse auto-école : juste vous, un moniteur de confiance, et la route.</p>
+      </div>
+      <div class="bg-panel border border-white/10 rounded-3xl p-6 md:p-8">
+        <h2 class="font-display font-extrabold uppercase text-2xl tracking-tight">Nos valeurs</h2>
+        <ul class="text-white/65 mt-3 space-y-2 text-[15px]">
+          <li class="flex gap-2"><span class="text-red font-bold">→</span> Transparence sur les prix et les dispos</li>
+          <li class="flex gap-2"><span class="text-red font-bold">→</span> Proximité : un moniteur près de chez vous</li>
+          <li class="flex gap-2"><span class="text-red font-bold">→</span> Liberté : vous choisissez, vous réservez</li>
+        </ul>
+      </div>
+    </div>
+
+    <button onclick="nav('resultats')" class="mt-8 w-full font-extrabold uppercase tracking-wide px-6 py-4 rounded-2xl bg-red text-white hover:bg-red-bright transition shadow-[0_0_30px_-8px_rgba(225,29,43,.9)]">Trouver mon moniteur →</button>
+  </div>
+</section>
+
 </main>
 
 <footer class="relative mt-10 border-t border-white/10 overflow-hidden">
@@ -405,6 +565,31 @@
     <p>Moniteurs ↔ candidats libres · Maquette de démonstration</p>
   </div>
 </footer>
+
+<!-- ====================== CHATBOT FLOTTANT ====================== -->
+<div id="chatPanel" class="hidden fixed bottom-24 right-4 sm:right-6 z-[55] w-[min(90vw,360px)] bg-panel border border-white/10 rounded-3xl shadow-2xl overflow-hidden">
+  <div class="bg-gradient-to-r from-red to-red-dark p-4 flex items-center gap-3">
+    <div class="w-10 h-10 rounded-full bg-white/15 grid place-items-center">
+      <svg viewBox="0 0 24 24" class="w-5 h-5 text-white" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <div class="flex-1">
+      <p class="font-extrabold text-white leading-tight">Assistant CandiCar</p>
+      <p class="text-white/70 text-xs flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-dispo"></span> En ligne</p>
+    </div>
+    <button onclick="toggleChat()" class="text-white/80 hover:text-white"><svg viewBox="0 0 24 24" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
+  </div>
+  <div id="chatBody" class="p-4 space-y-3 max-h-72 overflow-y-auto">
+    <div class="bg-panel2 rounded-2xl rounded-tl-sm p-3 text-sm text-white/85 max-w-[85%]">Salut 👋 Je suis l'assistant CandiCar. Comment puis-je vous aider ?</div>
+  </div>
+  <div class="p-3 border-t border-white/10 flex flex-wrap gap-2">
+    <button onclick="chatAsk('Comment réserver ?')" class="text-xs font-bold px-3 py-2 rounded-full bg-panel2 border border-white/10 hover:border-red transition">Comment réserver ?</button>
+    <button onclick="chatAsk('Annuler une leçon')" class="text-xs font-bold px-3 py-2 rounded-full bg-panel2 border border-white/10 hover:border-red transition">Annuler une leçon</button>
+    <button onclick="chatAsk('Parler à un humain')" class="text-xs font-bold px-3 py-2 rounded-full bg-panel2 border border-white/10 hover:border-red transition">Parler à un humain</button>
+  </div>
+</div>
+<button onclick="toggleChat()" id="chatBtn" class="fixed bottom-6 right-4 sm:right-6 z-[55] w-14 h-14 rounded-full bg-red text-white grid place-items-center shadow-[0_0_30px_-6px_rgba(225,29,43,.9)] hover:bg-red-bright transition active:scale-95">
+  <svg viewBox="0 0 24 24" class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+</button>
 
 <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] bg-white text-noir px-5 py-3.5 rounded-2xl shadow-2xl text-sm font-bold flex items-center gap-3"></div>
 
@@ -531,6 +716,88 @@
 
   renderResults();
   renderCalendar();
+
+  /* ---------- AIDE : onglets élève / moniteur ---------- */
+  const aideContent = {
+    eleve: [
+      { t:'Trouver un moniteur', d:'Rechercher et contacter un moniteur près de chez vous.', c:'red', ic:'M21 21l-4.3-4.3M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14z' },
+      { t:'Réserver une leçon', d:'Choisir un créneau, modifier ou annuler un rendez-vous.', c:'blue', ic:'M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z' },
+      { t:'Paiement & formules', d:'Moyens de paiement, forfaits et factures.', c:'red', ic:'M3 7h18v10H3zM3 11h18' },
+      { t:'Mon compte', d:'Créer un compte, mot de passe, notifications.', c:'blue', ic:'M20 21a8 8 0 1 0-16 0M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z' },
+    ],
+    moniteur: [
+      { t:'Devenir moniteur', d:'M\'inscrire, créer mon annonce, fixer mes tarifs.', c:'red', ic:'M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM19 8v6M22 11h-6' },
+      { t:'Gérer mon planning', d:'Ouvrir des créneaux, gérer et déplacer les réservations.', c:'blue', ic:'M8 2v4M16 2v4M3 10h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z' },
+      { t:'Être payé', d:'Recevoir mes paiements, délais et justificatifs.', c:'red', ic:'M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6' },
+      { t:'Mon compte moniteur', d:'Profil, vérification, notifications.', c:'blue', ic:'M20 21a8 8 0 1 0-16 0M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z' },
+    ]
+  };
+  const faqContent = {
+    eleve: [
+      ['Comment réserver une leçon ?', 'Cherchez un moniteur, ouvrez sa fiche, cliquez sur un créneau vert dans son planning puis confirmez. Vous recevez un rappel avant le rendez-vous.'],
+      ['Puis-je annuler ou déplacer ?', 'Oui, jusqu\'à 24 h avant le créneau, directement depuis votre espace, sans frais.'],
+      ['Comment se passe le paiement ?', 'Vous payez à l\'heure ou via un forfait. Le paiement est sécurisé et la facture dispo dans votre compte.'],
+    ],
+    moniteur: [
+      ['Comment ouvrir des créneaux ?', 'Depuis votre planning, marquez vos disponibilités en vert. Les élèves ne peuvent réserver que ces créneaux.'],
+      ['Quand suis-je payé ?', 'Les paiements sont versés après la leçon, selon le délai indiqué dans votre espace moniteur.'],
+      ['Quel statut pour donner des cours ?', 'Vous devez être enseignant de la conduite diplômé. Les justificatifs sont demandés à l\'inscription.'],
+    ]
+  };
+  let aideTab = 'eleve';
+  function setAideTab(i) {
+    aideTab = i === 0 ? 'eleve' : 'moniteur';
+    const e = document.getElementById('aideTabEleve'), m = document.getElementById('aideTabMoniteur');
+    e.className = 'py-3 rounded-xl transition ' + (i===0 ? 'bg-red text-white font-bold' : 'text-white/60 font-bold');
+    m.className = 'py-3 rounded-xl transition ' + (i===1 ? 'bg-red text-white font-bold' : 'text-white/60 font-bold');
+    renderAide();
+  }
+  function renderAide() {
+    document.getElementById('aideCards').innerHTML = aideContent[aideTab].map(x => {
+      const tile = x.c === 'blue' ? 'bg-blue/15 text-blue-light border-blue/30' : 'bg-red/15 text-red border-red/30';
+      return `<button onclick="toast('Article : ${x.t} (démo)')" class="text-left bg-panel border border-white/10 rounded-2xl p-5 hover:border-red/50 hover:-translate-y-1 transition flex gap-4">
+        <div class="shrink-0 w-12 h-12 rounded-xl border grid place-items-center ${tile}"><svg viewBox="0 0 24 24" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2"><path d="${x.ic}"/></svg></div>
+        <div><h3 class="font-extrabold">${x.t}</h3><p class="text-white/50 text-sm mt-0.5">${x.d}</p></div>
+      </button>`;
+    }).join('');
+    document.getElementById('faqList').innerHTML = faqContent[aideTab].map((q,i) => `
+      <div class="bg-panel border border-white/10 rounded-2xl overflow-hidden">
+        <button onclick="toggleFaq(${i})" class="w-full flex items-center justify-between gap-3 p-4 text-left font-bold hover:text-red transition">
+          <span>${q[0]}</span>
+          <svg id="faqIco${i}" viewBox="0 0 24 24" class="w-5 h-5 shrink-0 text-white/40 transition-transform" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
+        <div id="faqAns${i}" class="hidden px-4 pb-4 text-sm text-white/60 leading-relaxed">${q[1]}</div>
+      </div>`).join('');
+  }
+  function toggleFaq(i) {
+    document.getElementById('faqAns'+i).classList.toggle('hidden');
+    document.getElementById('faqIco'+i).classList.toggle('rotate-180');
+  }
+
+  /* ---------- Parrainage : copier ---------- */
+  function copier(txt) {
+    if (navigator.clipboard) navigator.clipboard.writeText(txt).catch(()=>{});
+    toast('Copié : ' + txt);
+  }
+
+  /* ---------- Chatbot ---------- */
+  function toggleChat() { document.getElementById('chatPanel').classList.toggle('hidden'); }
+  function chatAsk(q) {
+    const body = document.getElementById('chatBody');
+    const rep = {
+      'Comment réserver ?': 'Ouvrez la fiche d\'un moniteur, cliquez sur un créneau vert puis confirmez. Simple comme bonjour 🚗',
+      'Annuler une leçon': 'Vous pouvez annuler jusqu\'à 24 h avant depuis votre espace, sans frais.',
+      'Parler à un humain': 'Pas de souci — utilisez le formulaire « Contactez le support » dans la page Aide, on répond sous 24 h.'
+    }[q] || 'Je note votre question, un conseiller vous répondra.';
+    body.innerHTML += `<div class="bg-red text-white rounded-2xl rounded-tr-sm p-3 text-sm max-w-[85%] ml-auto">${q}</div>`;
+    setTimeout(() => {
+      body.innerHTML += `<div class="bg-panel2 rounded-2xl rounded-tl-sm p-3 text-sm text-white/85 max-w-[85%]">${rep}</div>`;
+      body.scrollTop = body.scrollHeight;
+    }, 450);
+    body.scrollTop = body.scrollHeight;
+  }
+
+  renderAide();
 </script>
 </body>
 </html>
